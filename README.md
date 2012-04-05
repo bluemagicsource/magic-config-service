@@ -2,7 +2,15 @@
 This project contains the source code used to create a deployable war for use in a java container (Apache Tomcat/Jetty etc) that manages a set of properties that can be accessed remotely via REST over HTTP. The basic implementation of a property repository utilizes a lightweight datastore. This keeps the footprint small and extremely portable.
 
 ## Documentation
-TBD
+1) To run the current example, do the following command:
+    mvn jetty6:run
+
+2) Then in your browser go to the following URI's:
+    http://localhost:8080/property/some/prop
+    http://localhost:8080/property/some/prop?tags=development
+    http://localhost:8080/property/some/prop?tags=production
+    
+3)  Write a JUnit Test in a different application that hits these URI's while it's still running and view the results.
 
 ## Downloads
 TBD
