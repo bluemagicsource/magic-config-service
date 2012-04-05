@@ -2,6 +2,8 @@ package org.bluemagic.config.service.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bluemagic.config.service.PropertyService;
 import org.bluemagic.config.service.utils.ServletUtils;
 import org.bluemagic.config.service.utils.TagUtils;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class GetPropertyController {
 
+	private static final Log LOG = LogFactory.getLog(GetPropertyController.class);
+	
 	@Autowired
 	private PropertyService propertyService;
 	
@@ -45,11 +49,15 @@ public class GetPropertyController {
 			property.append(orderedTags);
 		}
 		
-		// Retrieve the value for this Property
+		// Retrieve the value for this Property.
 		String rval = propertyService.getProperty(property.toString());
 		
 		if (rval == null) {
 			throw new RuntimeException("Property " + property.toString() + " not found!");
+		}
+		
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Resolved property: " + property.toString() + " ----> " + rval);
 		}
 		
 		return rval;

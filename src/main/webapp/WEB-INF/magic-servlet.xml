@@ -25,6 +25,29 @@
         </property>
     </bean>
     
-    <bean class="org.bluemagic.config.service.HashMapPropertyService" />
+    <!-- ======================= -->
+    <!-- == PROPERTY SERVICES == -->
+    <!-- ======================= -->
+    
+    <!-- Only ONE can be used at a time! -->
+    
+    <bean class="org.bluemagic.config.service.HashMapPropertyService">
+        <constructor-arg>
+            <map>
+                <entry key="some/prop" value="BASE" />
+                <entry key="some/prop?tags=production" value="PRODUCTION" />
+                <entry key="some/prop?tags=development" value="DEVELOPMENT" />
+            </map>
+        </constructor-arg>
+    </bean>
+    
+    <!-- You need to create a properties file at the uri that you provide.
+         This service has been designed to let you update the properties file on the fly. -->    
+    <!--  
+    <bean class="org.bluemagic.config.service.FilePropertyService">
+        <property name="uri" value="file:///your/path/to/the/properties/file" />
+        <property name="useTags" value="true" />
+    </bean>
+     -->
 	
 </beans>
