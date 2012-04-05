@@ -38,7 +38,10 @@ public class FilePropertyService implements PropertyService {
 		try {
 			// If the properties have never been loaded, or they've been recently updated
 			// then load the properties from disk.
-			if (this.properties == null || this.lastModified < this.file.lastModified()) {
+			final long lastMod = this.file.lastModified();
+			
+			if (this.properties == null || this.lastModified < lastMod) {
+				this.lastModified = lastMod;
 				this.properties = loadProperties();
 			}
 			
