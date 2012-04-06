@@ -3,7 +3,7 @@ This project contains the source code used to create a deployable war for use in
 
 ## Documentation
 1) To run the current example, do the following command:
-<br>mvn jetty6:run
+<br>mvn jetty:run
 
 2) Then in your browser go to the following URI's:
 <br>http://localhost:8080/property/some/prop
