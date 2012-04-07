@@ -12,7 +12,7 @@ public class RestClientUtilTest {
 		URI uri = null;
 		
 		try {
-			uri = new URI("http://localhost:8080/property/some/prop?tags=production");
+			uri = new URI("http://localhost:8080/property/some/prop");
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -29,7 +29,7 @@ public class RestClientUtilTest {
         URI uri = null;
 		
 		try {
-			uri = new URI("http://localhost:8080/create/some/prop?tags=new");
+			uri = new URI("http://localhost:8080/property/some/prop?tags=new");
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,7 +43,7 @@ public class RestClientUtilTest {
         URI uri = null;
 		
 		try {
-			uri = new URI("http://localhost:8080/delete/some/prop?tags=production");
+			uri = new URI("http://localhost:8080/property/some/prop?tags=production");
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
