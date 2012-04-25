@@ -3,8 +3,10 @@ package org.bluemagic.config.service.utils;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class RestClientUtilTest {
 
 	@Test
