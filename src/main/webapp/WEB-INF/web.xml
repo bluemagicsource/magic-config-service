@@ -10,13 +10,31 @@
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>
-        /WEB-INF/classes/magic-servlet.xml
-      </param-value>
+      <param-value>classpath*:magic-servlet.xml,classpath*:magic-h2-database.xml</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
-  
+<!--
+  <servlet>
+    <servlet-name>H2Console</servlet-name>
+    <servlet-class>org.h2.server.web.WebServlet</servlet-class>
+xx
+    <init-param>
+        <param-name>webAllowOthers</param-name>
+        <param-value></param-value>
+    </init-param>
+    <init-param>
+        <param-name>trace</param-name>
+        <param-value></param-value>
+    </init-param>
+xx
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>H2Console</servlet-name>
+    <url-pattern>/console/*</url-pattern>
+  </servlet-mapping>
+-->
   <servlet-mapping>
     <servlet-name>magic</servlet-name>
     <url-pattern>/</url-pattern>
@@ -26,5 +44,6 @@
     <servlet-name>default</servlet-name>
     <url-pattern>/static/</url-pattern>
   </serlet-mapping>
+
   
 </web-app>
