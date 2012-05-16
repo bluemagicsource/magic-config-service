@@ -71,6 +71,13 @@ public class UserRepositoryImpl implements UserRepository {
      **/
 	public Object remove(URI key, 
                          String userIdentifier) {
+	    //IF key is not in repository
+	    //THEN return MissingProperty
+
+	    //SET returnVal to value at key
+	    //INSERT value into history table
+	    //DELETE value at key
+	    //RETURN returnVal
         return null;
     }
 	
