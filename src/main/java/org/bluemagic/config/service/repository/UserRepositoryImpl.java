@@ -42,6 +42,22 @@ public class UserRepositoryImpl implements UserRepository {
      **/
 	public Object get(URI key, 
                       String userIdentifier) {
+
+	/* 
+	 * IF key is valid
+	 * 	objValue = SELECT key
+	 *	update property last accessed by userIdentifier
+	 *	update odometer
+	 * ELSE
+	 *	return MissingProperty
+	 *
+	 *
+	 * IF objValue = null
+	 *	return null
+	 * ELSE
+	 *	return objValue
+	 **/
+
         return null;
     }
 
