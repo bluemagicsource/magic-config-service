@@ -1,7 +1,11 @@
 package org.bluemagic.config.service.utils;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 public final class TagUtils {
@@ -16,31 +20,14 @@ public final class TagUtils {
 
         // Order the single tags.
         List<String> tagsToSort = new ArrayList<String>();
-        List<String> unsortedSingleTags = new ArrayList<String>();
         for (String part : unsortedTags) {
             // Look for the single tags.
             if (part.startsWith("tags=")) {
                 int index = part.indexOf("=");
-                String tagsString = part.substring(index + 1);
-                String[] tags = tagsString.split(",");
+                String tagsString = part.substring(index + 1);                
+                String reorderedSingleTags = reorderSingleTags(tagsString);
 
-                for (String tag : tags) {
-                    unsortedSingleTags.add(tag);
-                }
-
-                TreeSet<String> singleTags = new TreeSet<String>(
-                        unsortedSingleTags);
-                StringBuilder sortedSingleTagsString = new StringBuilder(
-                        "tags=");
-                while (!singleTags.isEmpty()) {
-                    sortedSingleTagsString.append(singleTags.pollFirst());
-
-                    if (!singleTags.isEmpty()) {
-                        sortedSingleTagsString.append(",");
-                    }
-                }
-
-                tagsToSort.add(sortedSingleTagsString.toString());
+                tagsToSort.add(reorderedSingleTags);
                 // Not a single tag, so add it to the tags to sort.
             } else {
                 tagsToSort.add(part);
@@ -61,4 +48,167 @@ public final class TagUtils {
 
         return normalizedTags.toString();
     }
+    
+    public static Map<String, String> parseTags(URI key) {
+    	
+    	Map<String, String> results = new HashMap<String, String>();
+    	
+    	// GET ALL THE TAGS
+    	String query = key.getQuery();
+    	
+    	if (query != null) {
+    		
+    		// SPLIT INTO KEY=VALUE PAIRS
+    		String[] properties = query.split("&");
+    		
+    		for (String property : properties) {
+    			
+    			String[] keyValue = property.split("=");
+    			
+    			// RE-ORDER SINGLE TAGS
+    			if (keyValue[0].equals("tags")) {
+    				
+    				String reorderedTags = reorderSingleTags(keyValue[1]);
+    				
+    				results.put(keyValue[0], reorderedTags);
+    			} else {
+    				
+    				// ADD PROPERTY TO RESULTS MAPPING
+    				results.put(keyValue[0], keyValue[1]);
+    			}    		
+    		}
+    	}
+    	
+    	return results;
+    }
+    
+    public static String parseUserFromSingleTags(String singleTags) {
+		
+		String result = null;
+		
+		String[] tags = singleTags.split(",");
+		
+		for (String tag : tags) {
+			
+			if (tag.startsWith("@") && tag.length() > 1) {
+				
+				result = tag.substring(1);
+				break;
+			}
+		}
+		
+		return result;
+	}
+    
+    public static String removeUserFromSingleTags(String singleTags) {
+		
+		String[] tags = singleTags.split(",");
+		int totalTags = tags.length;
+		
+		StringBuilder singleTagsWithoutUser = new StringBuilder();
+		
+		for (int i = 0; i < totalTags; i++) {
+			
+			String tag = tags[i];
+			
+			if (!tag.startsWith("@")) {
+				
+				singleTagsWithoutUser.append(tag);
+				
+				if (i < totalTags - 1) {
+					
+					singleTagsWithoutUser.append(",");
+				}
+			}
+		}
+		
+		return reorderSingleTags(singleTagsWithoutUser.toString());
+	}
+
+	public static String reorderSingleTags(String originalTags) {
+		// TREESET WILL BE USED TO ORDER TAGS
+		TreeSet<String> singleTags = new TreeSet<String>();
+		
+		// SPLIT ALL THE SINGLE TAGS
+		String[] individualTags = originalTags.split(",");
+		
+		// ADD SINGLE TAGS TO TREESET
+		for (String tag : individualTags) {
+			
+			singleTags.add(tag);
+		}
+		
+		// CREATE NEW STRING
+		StringBuilder reorderedSingleTags = new StringBuilder();
+		
+		// RE-ASSEMBLE SINGLE TAGS
+		Iterator<String> iter = singleTags.iterator();
+		
+		while (iter.hasNext()) {
+			
+			reorderedSingleTags.append(iter.next());
+			
+			if (iter.hasNext()) {
+				reorderedSingleTags.append(",");
+			}
+		}
+		
+		String reorderedTags = reorderedSingleTags.toString();
+		return reorderedTags;
+	}
+	
+	public static String reassemble(String base, Map<String, String> tags) {
+
+		String result = base;
+		
+		if (!tags.isEmpty()) {
+			
+			// TreeSet to order the tags.
+			TreeSet<String> orderedTags = new TreeSet<String>();
+			
+			// Put the key, value pairs together.
+			for (Map.Entry<String, String> property : tags.entrySet()) {
+				
+				// Assemble the property
+				String prop = property.getKey() + "=" + property.getValue();
+				
+				orderedTags.add(prop);
+			}
+			
+			// Assemble the query portion.
+			StringBuilder rearrangedTags = new StringBuilder();
+			Iterator<String> iter = orderedTags.iterator();
+			
+			while (iter.hasNext()) {
+				
+				rearrangedTags.append(iter.next());
+				
+				if (iter.hasNext()) {
+					
+					rearrangedTags.append("&");
+				}
+			}
+			
+			result =  base + "?" + rearrangedTags.toString();
+		}
+		
+		return result;
+	}
+	
+	public static String getPropertyWithoutTags(URI key, String baseUrl) {
+		
+		String keyAsString = key.toASCIIString();
+		String keyWithoutBaseUrl = keyAsString.replaceAll(baseUrl, "");
+		
+		String result = keyWithoutBaseUrl;
+		
+		if (keyWithoutBaseUrl.contains("?")) {
+			
+			int queryBegins = keyWithoutBaseUrl.indexOf("?");
+			
+			result = keyWithoutBaseUrl.substring(0, queryBegins);
+		}
+		
+		return result;
+	}
 }
