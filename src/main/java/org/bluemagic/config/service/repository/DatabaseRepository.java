@@ -3,12 +3,13 @@ package org.bluemagic.config.service.repository;
 import java.net.URI;
 import java.util.Map;
 
-import org.bluemagic.config.api.Repository;
+import org.bluemagic.config.api.service.CompletePropertyDetails;
+import org.bluemagic.config.api.service.PropertyDetails;
 import org.bluemagic.config.service.dao.PropertiesDao;
 import org.bluemagic.config.service.dao.UserDao;
 import org.bluemagic.config.service.utils.TagUtils;
 
-public class DatabaseRepository implements Repository {
+public class DatabaseRepository implements DetailsRepository {
 
 	private PropertiesDao propertiesDao;
 	private UserDao userDao;
@@ -66,6 +67,37 @@ public class DatabaseRepository implements Repository {
 	@Override
 	public Object get(URI key) {
 		
+		String propertyWithTags = getNormalizedProperty(key);
+		
+		// Go to the database and try to retrieve this property.		
+		String result = propertiesDao.getPropertyValue(propertyWithTags);
+		
+		return result;
+	}
+
+	@Override
+	public PropertyDetails getPropertyDetails(URI key) {
+		
+		String propertyWithTags = getNormalizedProperty(key);
+		
+		// Go to the database and try to retrieve the property details.
+		PropertyDetails result = propertiesDao.getPropertyDetails(propertyWithTags);
+		
+		return result;
+	}
+
+	@Override
+	public CompletePropertyDetails getCompletePropertyDetails(URI key) {
+		
+		String propertyWithTags = getNormalizedProperty(key);
+		
+		// Go to the database and try to retrieve the property details.
+		CompletePropertyDetails result = propertiesDao.getCompletePropertyDetails(propertyWithTags);
+		
+		return result;
+	}
+	
+	private String getNormalizedProperty(URI key) {
 		// Parse out all the tags...
 		Map<String, String> tags = TagUtils.parseTags(key);
 
@@ -78,11 +110,7 @@ public class DatabaseRepository implements Repository {
 		// Add reordered tags back to the property.  This will normalize all the tags
 		// so they are in alphabetical order.
 		String propertyWithTags = TagUtils.reassemble(propertyWithoutTags, tags);
-		
-		// Go to the database and try to retrieve this property.		
-		String value = propertiesDao.getPropertyValue(propertyWithTags);
-		
-		return value;
+		return propertyWithTags;
 	}
 
 	private void removeUserFromTags(Map<String, String> tags) {
