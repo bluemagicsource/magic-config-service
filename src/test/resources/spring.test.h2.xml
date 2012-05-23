@@ -27,4 +27,13 @@
         </property>
     </bean>
     
+    <!-- TagDao -->
+    <bean id="tagDao" class="org.bluemagic.config.service.dao.impl.TagDaoJdbcImpl">
+        <property name="jdbcTemplate">
+            <bean class="org.springframework.jdbc.core.JdbcTemplate">
+                <property name="dataSource" ref="dataSource" />
+            </bean>
+        </property>
+    </bean>
+    
 </beans>
