@@ -15,7 +15,7 @@ public class TagDaoJdbcImplTest {
 		
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.test.h2.xml");
 		
-		// GET USER DAO FROM CONTEXT
+		// GET TAG DAO FROM CONTEXT
 		tagDao = ctx.getBean(TagDaoJdbcImpl.class);
 	}
 	
@@ -23,9 +23,11 @@ public class TagDaoJdbcImplTest {
 	public void testTagDoesntExist() {
 		
 		String value = tagDao.getTagById(1);
+		int id = tagDao.getTagId("empty","tag");
 		
-		// MAKE SURE THE TAG DOESN'T EXIST
+		// make sure tag and id do not exist
 		Assert.assertNull(value);
+		Assert.assertTrue(id == -1);
 	}
 	
 	@Test
@@ -35,26 +37,16 @@ public class TagDaoJdbcImplTest {
 		
 		Assert.assertTrue(inserted);
 		
-		// Try to pull the tag out
+		// Try to pull the tag out by id
 		String value = tagDao.getTagById(1);
 		
+		// Try to pull the tag id out by key and value
+		int id = tagDao.getTagId("system", "test");
+		
 		Assert.assertNotNull(value);
+		Assert.assertTrue(id != -1);
 		Assert.assertEquals("test", value);
-	}
-	
-	@Test
-	public void testUpdateTagById() {
-		
-		boolean inserted = tagDao.insertTag("system","test");
-		boolean updated = tagDao.updateTagById(1,"system","production");
-		
-		Assert.assertTrue(updated);
-		
-		// Try to pull the tag out
-		String value = tagDao.getTagById(1);
-		
-		Assert.assertNotNull(value);
-		Assert.assertEquals("production", value);
+		Assert.assertTrue(id == 1);
 	}
 	
 	@Test
