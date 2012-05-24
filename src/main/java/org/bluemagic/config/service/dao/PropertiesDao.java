@@ -5,9 +5,11 @@ import org.bluemagic.config.api.service.PropertyDetails;
 
 public interface PropertiesDao {
 
-	public String getPropertyValue(String propertyKey);
+    public boolean insertProperty(String propertyKey, String propertyValue);
 
-	public PropertyDetails getPropertyDetails(String propertyWithTags);
+    public String getPropertyValue(String propertyKey);
 
-	public CompletePropertyDetails getCompletePropertyDetails(String propertyWithTags);
+    public PropertyDetails getPropertyDetails(String propertyWithTags);
+
+    public CompletePropertyDetails getCompletePropertyDetails(String propertyWithTags);
 }

@@ -8,7 +8,19 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesDao {
 
-	private static final String SELECT_PROPERTY_VALUE = "SELECT VALUE FROM PROPERTIES WHERE PROPERTYKEY=?";
+	private static final String SELECT_PROPERTY_VALUE = "SELECT VALUE FROM PROPERTIES WHERE KEY=?";
+	private static final String INSERT_PROPERTY_VALUE = "INSERT INTO PROPERTIES (KEY, VALUE) VALUES (?,?)";
+
+        @Override
+	public boolean insertProperty(String propertyKey, String propertyValue) {
+	    
+	    int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE, propertyKey, propertyValue);
+	    if (rowsUpdated == 1) {
+		return true;
+	    } else {
+		return false;
+	    }
+	}
 
 	@Override
 	public String getPropertyValue(String propertyKey){
