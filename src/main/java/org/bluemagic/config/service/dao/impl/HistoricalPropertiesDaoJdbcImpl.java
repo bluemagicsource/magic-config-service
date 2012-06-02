@@ -42,11 +42,11 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 	}
 
 	@Override
-	public String getHistoricalPropertyValue(String historicalpropertyKey){
+	public String getHistoricalPropertyValue(String historical_property_Key){
 
 		try{
 			// Try to select the propertyKey from the table. If the propertyKey is not found, the result will be null.
-			return getJdbcTemplate().queryForObject(SELECT_HISTORICAL_PROPERTY_VALUE, new Object[] { historicalpropertyKey }, String.class);
+			return getJdbcTemplate().queryForObject(SELECT_PROPERTY_BY_ID, new Object[] { historical_property_Key }, String.class);
 		} catch (Throwable t) {
 
 			// Means the propertyKey did not exist.
