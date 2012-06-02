@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements HistoricalPropertiesDao {
 
 	
-	private static final String INSERT_PROPERTY_VALUE = "INSERT INTO HISTORICAL PROPERTIES (KEY, VALUE) VALUES (?,?)";
+	private static final String INSERT_HISTORICAL_PROPERTIES_VALUE = "INSERT INTO HISTORICAL PROPERTIES (KEY, VALUE) VALUES (?,?)";
 	
 	private static final String SELECT_HISTORICAL_PROPERTIES_BY_ID = "SELECT PROPERTY FROM HISTORICAL PROPERTIES WHERE ID=?";
 	
