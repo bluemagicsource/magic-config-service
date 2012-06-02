@@ -13,7 +13,18 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 	
 	private static final String SELECT_HISTORICAL_PROPERTIES_BY_ID = "SELECT PROPERTY FROM HISTORICAL PROPERTIES WHERE ID=?";
 	
-        
+	private static final String SELECT_HISTORICAL_PROPERTIES_VALUE = "INSERT HISTORICAL PROPERTIES (KEY, VALUE) VALUES (?,?)";
+	
+	@Override
+	public boolean insertHistoricalProperty(String HistoricalpropertyKey, String HistoricalpropertyValue) {
+	    
+	    int rowsUpdated = getJdbcTemplate().update(INSERT_HISTORICAL_PROPERTY_VALUE, HistoricalpropertyKey, HistoricalpropertyValue);
+	    if (rowsUpdated == 1) {
+		return true;
+	    } else {
+		return false;
+	    }
+	}
 	
 	@Override
 	public int gethistoricalpropertiesById(int property_id) {
@@ -27,18 +38,6 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 			// Means the property did not exist.
 			return -1;
 		}
-	}
-	
-	
-	@Override
-	public boolean insertHistoricalProperty(String HistoricalpropertyKey, String HistoricalpropertyValue) {
-	    
-	    int rowsUpdated = getJdbcTemplate().update(INSERT_HISTORICAL_PROPERTY_VALUE, HistoricalpropertyKey, HistoricalpropertyValue);
-	    if (rowsUpdated == 1) {
-		return true;
-	    } else {
-		return false;
-	    }
 	}
 
 	@Override
