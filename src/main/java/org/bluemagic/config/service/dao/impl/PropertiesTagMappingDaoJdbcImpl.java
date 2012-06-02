@@ -4,8 +4,7 @@ import org.bluemagic.config.service.dao.PropertiesTagMappingDao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-
-public class PropertiesTagMappingDaoJdbcImpl {
+public class PropertiesTagMappingDaoJdbcImpl extends JdbcDaoSupport implements PropertiesTagMappingDao{
 	
 	private static final String INSERT_TAG = "INSERT INTO TAGS (KEY,VALUE) VALUES (?, ?)";
 	
