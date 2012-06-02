@@ -9,8 +9,25 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements HistoricalPropertiesDao {
 
 	private static final String INSERT_PROPERTY_VALUE = "INSERT INTO HISTORICAL PROPERTIES (KEY, VALUE) VALUES (?,?)";
-
-        @Override
+	private static final String SELECT_HISTORICAL_PROPERTIES_BY_ID = "SELECT PROPERTY FROM HISTORICAL PROPERTIES WHERE ID=?";
+        
+	
+	@Override
+	public int getpropertiesById(int property_id) {
+		
+		try {
+			
+			// Try to select the property from the table.  If the property is not found, the result will be null.
+			return getJdbcTemplate().queryForObject(SELECT_ID_FOR_PROPERTY, new Object[] { propertyid }, Integer.class);
+		} catch (EmptyResultDataAccessException erdae) {
+			
+			// Means the property did not exist.
+			return -1;
+		}
+	}
+	
+	
+	@Override
 	public boolean insertProperty(String propertyKey, String propertyValue) {
 	    
 	    int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE, propertyKey, propertyValue);
