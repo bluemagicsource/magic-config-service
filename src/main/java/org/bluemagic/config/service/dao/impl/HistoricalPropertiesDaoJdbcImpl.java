@@ -21,7 +21,7 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 		try {
 			
 			// Try to select the property from the table.  If the property is not found, the result will be null.
-			return getJdbcTemplate().queryForObject(SELECT_ID_FOR_PROPERTY, new Object[] { historicalpropertyid }, Integer.class);
+			return getJdbcTemplate().queryForObject(SELECT_ID_FOR__HISTORICAL_PROPERTIES, new Object[] { historicalpropertyid }, Integer.class);
 		} catch (EmptyResultDataAccessException erdae) {
 			
 			// Means the property did not exist.
