@@ -8,12 +8,15 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements HistoricalPropertiesDao {
 
+	
 	private static final String INSERT_PROPERTY_VALUE = "INSERT INTO HISTORICAL PROPERTIES (KEY, VALUE) VALUES (?,?)";
+	
 	private static final String SELECT_HISTORICAL_PROPERTIES_BY_ID = "SELECT PROPERTY FROM HISTORICAL PROPERTIES WHERE ID=?";
+	
         
 	
 	@Override
-	public int getpropertiesById(int property_id) {
+	public int gethistoricalpropertiesById(int property_id) {
 		
 		try {
 			
@@ -28,7 +31,7 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 	
 	
 	@Override
-	public boolean insertProperty(String propertyKey, String propertyValue) {
+	public boolean insertHistoricalProperty(String HistoricalpropertyKey, String HistoricalpropertyValue) {
 	    
 	    int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE, propertyKey, propertyValue);
 	    if (rowsUpdated == 1) {

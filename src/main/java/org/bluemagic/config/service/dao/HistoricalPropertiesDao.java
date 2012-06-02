@@ -5,11 +5,11 @@ import org.bluemagic.config.api.service.PropertyDetails;
 
 public interface HistoricalPropertiesDao {
 
-	public String getpropertiesById(int property_id);
+	public String gethistoricalpropertiesById(int property_id);
 	
-	public boolean insertproperty(String key, String value);
+	public boolean insertHistoricalproperty(String key, String value);
 	
-	public String getPropertyValue(String propertyKey);
+	public String getHistoricalPropertyValue(String HistoricalpropertyKey);
 
     public PropertyDetails getPropertyDetails(String propertyWithTags);
 
