@@ -8,14 +8,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class HistoricalPropertiesDaoJdbcImplTest {
 
-	private HistoricalPropertiesDao historicalpropertiesDao;
+	private HistoricalPropertiesDao HistoricalPropertiesDao;
 	
 	@Before
 	public void setUp() {
 		
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.test.h2.xml");
 		
-		// GET PROPERTY DAO FROM CONTEXT
+		// GET HISTORICAL PROPERTY DAO FROM CONTEXT
 		HistoricalPropertiesDao = ctx.getBean(HistoricalPropertiesDaoJdbcImpl.class);
 	}
 	
@@ -31,14 +31,14 @@ public class HistoricalPropertiesDaoJdbcImplTest {
 	
 	
 	@Test
-	public void testGethistoricalpropertyvalue() {
+	public void testgethistoricalpropertyvalue() {
 		
 		HistoricalPropertiesDao.inserthistoricalproperty("1", "test1");
 		HistoricalPropertiesDao.inserthistoricalproperty("2", "test2");
 		HistoricalPropertiesDao.inserthistoricalproperty("3", "test3");
 		
-		String property = HistoricalPropertiesDao.gethistoricalpropertyvalue("3");
+		String historicalproperty = HistoricalPropertiesDao.gethistoricalpropertyvalue("3");
 		
-		Assert.assertEquals("test3", property);
+		Assert.assertEquals("test3", historicalproperty);
 	}
 }

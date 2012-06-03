@@ -45,3 +45,11 @@ LAST_MODIFIED_DATETIME timestamp,
 LAST_MODIFIED_USER varchar(256),
 constraint PK_HPROP_ID primary key (ID),
 constraint UC_HPROP_KEY unique (VALUE));
+
+drop table if exists PROPERTIES_TAG_MAPPING;
+create table PROPERTIES_TAG_MAPPING (
+PROPERTY_ID bigint,
+TAG_ID bigint,
+constraint PK_PROPTAG_ID primary key (PROPERTY_ID, TAG_ID),
+constraint FK_PROP_ID foreign key (PROPERTY_ID) references PROPERTIES(ID),
+constraint FK_TAG_ID foreign key (TAG_ID) references TAGS(ID));

@@ -51,5 +51,13 @@
             </bean>
         </property>
     </bean>
+    <!-- PropertiesTagMappingDao -->
+    <bean id="propertiestagmappingDao" class="org.bluemagic.config.service.dao.impl.PropertiesTagMappingDaoJdbcImpl">
+        <property name="jdbcTemplate">
+            <bean class="org.springframework.jdbc.core.JdbcTemplate">
+                <property name="dataSource" ref="dataSource" />
+            </bean>
+        </property>
+    </bean>
     
 </beans>
