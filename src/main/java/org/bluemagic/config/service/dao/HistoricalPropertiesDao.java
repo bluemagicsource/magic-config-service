@@ -7,15 +7,13 @@ import java.lang.String;
 
 public interface HistoricalPropertiesDao {
 
-	public boolean gethistoricalpropertiesById(int property_id);
-	
-	public String insertHistoricalproperty(String key, String value);
-	
-	public String getHistoricalPropertyValue(String historical_property_key);
+	 public boolean inserthistoricalproperty(String historicalpropertyKey, String historicalpropertyValue);
 
-    public PropertyDetails getPropertyDetails(String propertyWithTags);
+	    public String gethistoricalpropertyvalue(String historicalpropertyKey);
 
-    public CompletePropertyDetails getCompletePropertyDetails(String propertyWithTags);
+	    public PropertyDetails getPropertyDetails(String historicalpropertyWithTags);
+
+	    public CompletePropertyDetails getCompletePropertyDetails(String historicalpropertyWithTags);
 	
     // Delete method is omitted
 	

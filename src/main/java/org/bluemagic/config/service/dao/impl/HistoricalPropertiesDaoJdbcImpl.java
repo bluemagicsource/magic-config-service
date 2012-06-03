@@ -11,14 +11,12 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 	
 	private static final String INSERT_HISTORICAL_PROPERTIES_VALUE = "INSERT INTO HISTORICAL PROPERTIES (KEY, VALUE) VALUES (?,?)";
 	
-	private static final String SELECT_HISTORICAL_PROPERTIES_BY_ID = "SELECT PROPERTY FROM HISTORICAL PROPERTIES WHERE ID=?";
-	
 	private static final String SELECT_HISTORICAL_PROPERTIES_VALUE = "INSERT HISTORICAL PROPERTIES (KEY, VALUE) VALUES (?,?)";
 	
 	@Override
-	public boolean insertHistoricalProperty(String HistoricalpropertyKey, String HistoricalpropertyValue) {
+	public boolean inserthistoricalproperty(String HistoricalpropertyKey, String HistoricalpropertyValue) {
 	    
-	    int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE, HistoricalpropertyKey, HistoricalpropertyValue);
+	    int rowsUpdated = getJdbcTemplate().update(INSERT_HISTORICAL_PROPERTIES_VALUE, HistoricalpropertyKey, HistoricalpropertyValue);
 	    if (rowsUpdated == 1) {
 		return true;
 	    } else {
@@ -26,26 +24,13 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 	    }
 	}
 	
-	@Override
-	public boolean gethistoricalpropertiesById(int property_id) {
-		
-		try {
-			
-			// Try to select the property from the table.  If the property is not found, the result will be null.
-			return getJdbcTemplate().queryForObject(SELECT_ID_FOR__PROPERTY, new Object[] { historicalpropertyid }, Integer.class);
-		} catch (EmptyResultDataAccessException erdae) {
-			
-			// Means the property did not exist.
-			return -1;
-		}
-	}
 
-	@Override
-	public String getHistoricalPropertyValue(String historical_property_Key){
+@Override
+	public String gethistoricalpropertyvalue(String historicalpropertyKey){
 
 		try{
 			// Try to select the propertyKey from the table. If the propertyKey is not found, the result will be null.
-			return getJdbcTemplate().queryForObject(SELECT_PROPERTY_BY_ID, new Object[] { historical_property_Key }, String.class);
+			return getJdbcTemplate().queryForObject(SELECT_HISTORICAL_PROPERTIES_VALUE, new Object[] { historicalpropertyKey }, String.class);
 		} catch (Throwable t) {
 
 			// Means the propertyKey did not exist.
@@ -54,12 +39,12 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 	}
 
 	@Override
-	public PropertyDetails getPropertyDetails(String propertyWithTags) {
+	public PropertyDetails getPropertyDetails(String historicalpropertyWithTags) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public CompletePropertyDetails getCompletePropertyDetails(String propertyWithTags) {
+	public CompletePropertyDetails getCompletePropertyDetails(String historicalpropertyWithTags) {
 		throw new UnsupportedOperationException();
 	}
 }
