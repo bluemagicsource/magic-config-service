@@ -22,22 +22,22 @@ public class HistoricalPropertiesDaoJdbcImplTest {
 	@Test
 	public void testPropertyDoesntExist() {
 		
-		String propertyKey = HistoricalPropertiesDao.getPropertyValue("test");
+		String historicalpropertyKey = HistoricalPropertiesDao.gethistoricalpropertyvalue("test");
 		
 		// MAKE SURE THE USER DOESN'T EXIST
-		Assert.assertNull(propertyKey);
+		Assert.assertNull(historicalpropertyKey);
 	}
 	
 	
 	
 	@Test
-	public void testGetHistoricalPropertyValue() {
+	public void testGethistoricalpropertyvalue() {
 		
-		HistoricalPropertiesDao.insertProperty("1", "test1");
-		HistoricalPropertiesDao.insertProperty("2", "test2");
-		HistoricalPropertiesDao.insertProperty("3", "test3");
+		HistoricalPropertiesDao.inserthistoricalproperty("1", "test1");
+		HistoricalPropertiesDao.inserthistoricalproperty("2", "test2");
+		HistoricalPropertiesDao.inserthistoricalproperty("3", "test3");
 		
-		String property = HistoricalPropertiesDao.getPropertyValue("3");
+		String property = HistoricalPropertiesDao.gethistoricalpropertyvalue("3");
 		
 		Assert.assertEquals("test3", property);
 	}
