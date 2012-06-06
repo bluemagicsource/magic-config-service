@@ -14,6 +14,9 @@ public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 	
 	private static final String DELETE_TAG_BY_ID = "DELETE FROM TAGS WHERE ID=?";
 	
+	/**
+	 * Get a specific tag id from the tag table by using the key value pair
+	 */
 	@Override
 	public int getTagId(String key, String value) {
 		
@@ -28,6 +31,9 @@ public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 		}
 	}
 	
+	/**
+	 * Get a specific tag from the tag table by using the tag id
+	 */
 	@Override
 	public String getTagById(int tag_id) {
 		
@@ -42,6 +48,9 @@ public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 		}
 	}
 
+	/**
+	 * Insert a tag into the tag table using the specified key and value
+	 */
 	@Override
 	public boolean insertTag(String key, String value) {
 		
@@ -54,6 +63,9 @@ public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 		}
 	}
 
+	/** 
+	 * Delete a tag based on specified tag id
+	 */
 	@Override
 	public boolean deleteTagById(int tag_id) {
 		
