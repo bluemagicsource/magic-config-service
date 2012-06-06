@@ -1,4 +1,4 @@
-package org.bluemagic.config.service.dao.impl;
+/*package org.bluemagic.config.service.dao.impl;
 
 import org.bluemagic.config.service.dao.PropertiesTagMappingDao;
 import org.junit.Assert;
@@ -68,3 +68,4 @@ public class PropertiesTagMappingDaoJdbcImplTest {
 	
 	
 }
+*/
