@@ -30,7 +30,7 @@ public class HistoricalPropertiesDaoJdbcImplTest {
 	
 	
 	
-	@Test
+	/*@Test
 	public void testgethistoricalpropertyvalue() {
 		
 		HistoricalPropertiesDao.inserthistoricalproperty("1", "test1");
@@ -41,4 +41,6 @@ public class HistoricalPropertiesDaoJdbcImplTest {
 		
 		Assert.assertEquals("test3", historicalproperty);
 	}
+	*/
+	
 }

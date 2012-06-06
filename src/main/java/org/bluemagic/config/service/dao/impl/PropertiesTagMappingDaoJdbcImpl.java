@@ -8,11 +8,36 @@ public class PropertiesTagMappingDaoJdbcImpl extends JdbcDaoSupport implements P
 
 	private static final String SELECT_PROPERTY_VALUE = "SELECT VALUE FROM PROPERTIES_TAG_MAPPING WHERE KEY=?";
 	
+	private static final String INSERT_TAG = "INSERT INTO PROPERTIES_TAG_MAPPING (KEY,VALUE) VALUES (?, ?)";
+	
+	private static final String INSERT_PROPERTY_VALUE = "INSERT INTO PROPERTIES (KEY, VALUE) VALUES (?,?)";
+	
 	private static final String SELECT_TAG_BY_ID = "SELECT VALUE FROM PROPERTIES_TAG_MAPPING WHERE ID=?";
 	
-	private static final String DELETE_TAG_BY_ID = "DELETE FROM PROPERTIES_TAG _MAPPING WHERE ID=?";
+	private static final String DELETE_TAG_BY_ID = "DELETE FROM PROPERTIES_TAG_MAPPING WHERE ID=?";
 	
+	@Override
+	public boolean insertProperty(String propertyKey, String propertyValue) {
+	    
+	    int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE, propertyKey, propertyValue);
+	    if (rowsUpdated == 1) {
+		return true;
+	    } else {
+		return false;
+	    }
+	}
 	
+	@Override
+	public boolean insertTag(String key, String value) {
+		
+		int rowsUpdated = getJdbcTemplate().update(INSERT_TAG, key, value);
+		
+		if (rowsUpdated == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	@Override
 	public String getPropertyValue(String propertyKey){
 

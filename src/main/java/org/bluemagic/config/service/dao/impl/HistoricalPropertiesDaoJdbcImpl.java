@@ -10,12 +10,12 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 
 
 	private static final String SELECT_HISTORICAL_PROPERTIES_VALUE = "SELECT VALUE FROM HISTORICAL PROPERTIES WHERE KEY=?";
-	private static final String INSERT_HISTORICAL_PROPERTIES_VALUE = "INSERT INTO HISTORICAL PROPERTIES (KEY, VALUE) VALUES (?,?)";
+	private static final String INSERT_HISTORICAL_PROPERTIES_VALUE = "INSERT INTO HISTORICAL_PROPERTIES (KEY, VALUE) VALUES (?,?)";
 	
 	@Override
-	public boolean inserthistoricalproperty(String historicalpropertyKey, String historicalpropertyValue) {
+	public boolean inserthistoricalproperty(String historicalpropertykey, String historicalpropertyvalue) {
 	    
-	    int rowsUpdated = getJdbcTemplate().update(INSERT_HISTORICAL_PROPERTIES_VALUE, historicalpropertyKey, historicalpropertyValue);
+	    int rowsUpdated = getJdbcTemplate().update(INSERT_HISTORICAL_PROPERTIES_VALUE, historicalpropertykey, historicalpropertyvalue);
 	    if (rowsUpdated == 1) {
 		return true;
 	    } else {

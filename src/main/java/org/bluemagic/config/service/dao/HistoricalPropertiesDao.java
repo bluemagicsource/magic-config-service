@@ -7,7 +7,7 @@ import java.lang.String;
 
 public interface HistoricalPropertiesDao {
 
-	 public boolean inserthistoricalproperty(String historicalpropertyKey, String historicalpropertyValue);
+	 public boolean inserthistoricalproperty(String historicalpropertykey, String historicalpropertyvalue);
 
 	    public String gethistoricalpropertyvalue(String historicalpropertyKey);
 
