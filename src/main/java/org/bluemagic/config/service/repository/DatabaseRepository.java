@@ -9,17 +9,37 @@ import org.bluemagic.config.service.dao.PropertiesDao;
 import org.bluemagic.config.service.dao.UserDao;
 import org.bluemagic.config.service.utils.TagUtils;
 
+/**
+ * The database repository has been designed to interface with our 
+ * data acccess layer (DAOs) to perform the various CRUD activities.
+ **/
 public class DatabaseRepository implements DetailsRepository {
 
 	private PropertiesDao propertiesDao;
 	private UserDao userDao;
 	private String baseUrl;
 	
+    /**
+     * Not 100% sure what the purpose of this method is so please add documentation
+     * either here or on the interface level -- Brian E. Walsh
+     *
+     * @param  uri - Requested uri
+     * @return boolean - true when the incoming uri is supported
+     **/
 	@Override
 	public boolean supports(URI uri) {
 		return true;
 	}
 
+    /**
+     * The put method inserts a new data record or updates
+     * an existing data record's value
+     *
+     * @param  key - Unique uri (note that our URIs should already
+     *         be normalized prior to reaching this interface.
+     * @param  value -
+     * @return return ?
+     **/
 	@Override
 	public Object put(URI key, Object value) {
 
@@ -64,6 +84,11 @@ public class DatabaseRepository implements DetailsRepository {
 		return null;
 	}
 
+    /**
+     * @param  key - Unique uri
+     * @return Object The current value corresponding to the key or MissingProperty
+     *         if the value does not exist in the repository
+     **/
 	@Override
 	public Object get(URI key) {
 		
@@ -134,22 +159,33 @@ public class DatabaseRepository implements DetailsRepository {
 		}
 	}
 
+    /**
+     * Removes the item from the repository.
+     *
+     * @param  key - Unique uri
+     * @return Object value removed
+     **/
 	@Override
 	public Object remove(URI key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+    /**
+     * Clears the entire repository.
+     **/
 	@Override
 	public void clear() {
-		throw new UnsupportedOperationException();
-	}
-
+        throw new UnsupportedOperationException("Database repository implementation does not support clear");
+    }
+	
+    /**
+     * Returns the total number of properties in the repository
+     **/
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+        throw new UnsupportedOperationException("Database repository implementation does not support clear");
+    }
 
 	public UserDao getUserDao() {
 		return userDao;
