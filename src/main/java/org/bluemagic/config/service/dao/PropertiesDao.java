@@ -1,7 +1,7 @@
 package org.bluemagic.config.service.dao;
 
-import org.bluemagic.config.api.service.CompletePropertyDetails;
-import org.bluemagic.config.api.service.PropertyDetails;
+import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
+import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 
 public interface PropertiesDao {
 
@@ -9,7 +9,7 @@ public interface PropertiesDao {
 
     public String getPropertyValue(String propertyKey);
 
-    public PropertyDetails getPropertyDetails(String propertyWithTags);
+	public PropertyDto getProperty(String key);
 
-    public CompletePropertyDetails getCompletePropertyDetails(String propertyWithTags);
+	public CompletePropertyDto getCompleteProperty(String key);
 }

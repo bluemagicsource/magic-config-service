@@ -1,12 +1,20 @@
 package org.bluemagic.config.service.repository;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import org.bluemagic.config.api.property.LocatedProperty;
 import org.bluemagic.config.api.service.CompletePropertyDetails;
 import org.bluemagic.config.api.service.PropertyDetails;
 import org.bluemagic.config.service.dao.PropertiesDao;
+import org.bluemagic.config.service.dao.PropertiesTagDao;
 import org.bluemagic.config.service.dao.UserDao;
+import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
+import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
+import org.bluemagic.config.service.utils.PropertyUtils;
 import org.bluemagic.config.service.utils.TagUtils;
 
 /**
@@ -16,6 +24,7 @@ import org.bluemagic.config.service.utils.TagUtils;
 public class DatabaseRepository implements DetailsRepository {
 
 	private PropertiesDao propertiesDao;
+	private PropertiesTagDao propertiesTagDao;
 	private UserDao userDao;
 	private String baseUrl;
 	
@@ -46,29 +55,22 @@ public class DatabaseRepository implements DetailsRepository {
 		// Parse out all the tags...
 		Map<String, String> tags = TagUtils.parseTags(key);
 		
-		// Grab the single tags, so we can try to get the user from it.
-		String singleTags = tags.get("tags");
-		
-		if (singleTags != null) {
-			
-			// If there is a user in the tags, get it out.
-			String user = TagUtils.parseUserFromSingleTags(singleTags);
+		String user = getUser(tags);
 
-			if (user != null) {
+		if (user != null) {
+			
+			// Check to see if the user exists.  If they don't, then add them to the
+			// user's table.
+			int userId = userDao.getUserId(user);
+			
+			// If the user doesn't exist yet, insert them into the user's table
+			if (userId == -1) {
 				
-				// Check to see if the user exists.  If they don't, then add them to the
-				// user's table.
-				int userId = userDao.getUserId(user);
-				
-				// If the user doesn't exist yet, insert them into the user's table
-				if (userId == -1) {
-					
-					userDao.insertUser(user);
-				}
-				
-				// Remove user from tags...
-				removeUserFromTags(tags);
+				userDao.insertUser(user);
 			}
+			
+			// Remove user from tags...
+			removeUserFromTags(tags);
 		}
 		
 		// Go through and check if the tags exist yet.
@@ -92,6 +94,11 @@ public class DatabaseRepository implements DetailsRepository {
 	@Override
 	public Object get(URI key) {
 		
+		// Parse out all the tags...
+		Map<String, String> tags = TagUtils.parseTags(key);
+		
+		String user = getUser(tags);
+		
 		String propertyWithTags = getNormalizedProperty(key);
 		
 		// Go to the database and try to retrieve this property.		
@@ -106,9 +113,35 @@ public class DatabaseRepository implements DetailsRepository {
 		String propertyWithTags = getNormalizedProperty(key);
 		
 		// Go to the database and try to retrieve the property details.
-		PropertyDetails result = propertiesDao.getPropertyDetails(propertyWithTags);
+		PropertyDto serviceProperty = propertiesDao.getProperty(propertyWithTags);
 		
-		return result;
+		// Now use the ID from the properties table to get all the tag id's associated with it.
+		int propertyId = serviceProperty.getId();
+		List<Integer> tagIds = propertiesTagDao.getTagIds(propertyId);
+		
+		
+		// Do we want to fail everything if we can't make one of the tags?
+		try {
+			
+			Collection<URI> tagDetails = new ArrayList<URI>();
+			
+			// Create the Tag URI's.   baseUrl + "/tags/" + id
+			for (Integer tagId : tagIds) {
+
+				tagDetails.add(new URI(baseUrl + "tags/" + tagId.toString()));
+			}
+			
+			// Add the baseUrl to the property key's.
+			LocatedProperty locatedProperty = serviceProperty.getProperty();			
+			LocatedProperty property = PropertyUtils.appendBase(locatedProperty, baseUrl + "properties/");
+			
+			PropertyDetails result = new PropertyDetails(property, tagDetails);
+			
+			return result;
+		} catch (Throwable t) {
+			
+			throw new RuntimeException(t.getMessage(), t);
+		}		
 	}
 
 	@Override
@@ -117,14 +150,38 @@ public class DatabaseRepository implements DetailsRepository {
 		String propertyWithTags = getNormalizedProperty(key);
 		
 		// Go to the database and try to retrieve the property details.
-		CompletePropertyDetails result = propertiesDao.getCompletePropertyDetails(propertyWithTags);
+		CompletePropertyDto completePropertyDto = propertiesDao.getCompleteProperty(propertyWithTags);
 		
-		return result;
+		// Now use the ID from the properties table to get all the tag id's associated with it.
+		int propertyId = completePropertyDto.getId();
+		List<Integer> tagIds = propertiesTagDao.getTagIds(propertyId);
+		
+		
+		// Do we want to fail everything if we can't make one of the tags?
+		try {
+			
+			Collection<URI> tagDetails = new ArrayList<URI>();
+			
+			// Create the Tag URI's.   baseUrl + "/tags/" + id
+			for (Integer tagId : tagIds) {
+
+				tagDetails.add(new URI(baseUrl + "tags/" + tagId.toString()));
+			}
+			
+			// Add the baseUrl to the property key's.
+			LocatedProperty locatedProperty = completePropertyDto.getProperty();			
+			LocatedProperty property = PropertyUtils.appendBase(locatedProperty, baseUrl + "properties/");
+			
+			CompletePropertyDetails result = new CompletePropertyDetails(property, tagDetails, completePropertyDto.getAttributes());
+			
+			return result;
+		} catch (Throwable t) {
+			
+			throw new RuntimeException(t.getMessage(), t);
+		}
 	}
 	
-	private String getNormalizedProperty(URI key) {
-		// Parse out all the tags...
-		Map<String, String> tags = TagUtils.parseTags(key);
+	private String getNormalizedProperty(URI key, Map<String, String> tags) {
 
 		// Remove user
 		removeUserFromTags(tags);
@@ -157,6 +214,22 @@ public class DatabaseRepository implements DetailsRepository {
 				tags.remove("tags");
 			}
 		}
+	}
+	
+	private String getUser(Map<String, String> tags) {
+		
+		String user = null;
+		
+		// Grab the single tags, so we can try to get the user from it.
+		String singleTags = tags.get("tags");
+		
+		if (singleTags != null) {
+			
+			// If there is a user in the tags, get it out.
+			user = TagUtils.parseUserFromSingleTags(singleTags);
+		}
+		
+		return user;
 	}
 
     /**
@@ -200,7 +273,13 @@ public class DatabaseRepository implements DetailsRepository {
 	}
 
 	public void setBaseUrl(String baseUrl) {
-		this.baseUrl = baseUrl;
+		
+		if (baseUrl.endsWith("/")) {
+			
+			this.baseUrl = baseUrl;
+		} else {
+			this.baseUrl = baseUrl + "/";
+		}
 	}
 
 	public PropertiesDao getPropertiesDao() {
@@ -209,5 +288,13 @@ public class DatabaseRepository implements DetailsRepository {
 
 	public void setPropertiesDao(PropertiesDao propertiesDao) {
 		this.propertiesDao = propertiesDao;
+	}
+
+	public PropertiesTagDao getPropertiesTagDao() {
+		return propertiesTagDao;
+	}
+
+	public void setPropertiesTagDao(PropertiesTagDao propertiesTagDao) {
+		this.propertiesTagDao = propertiesTagDao;
 	}
 }

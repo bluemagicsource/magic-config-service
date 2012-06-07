@@ -20,7 +20,7 @@
     
     <!-- UserDao -->
     <bean id="userDao" class="org.bluemagic.config.service.dao.impl.UserDaoJdbcImpl">
-<property name="jdbcTemplate">
+        <property name="jdbcTemplate">
             <bean class="org.springframework.jdbc.core.JdbcTemplate">
                 <property name="dataSource" ref="dataSource" />
             </bean>

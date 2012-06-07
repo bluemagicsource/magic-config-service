@@ -1,7 +1,7 @@
 create table USERS (
 ID identity,
 USERNAME varchar(256),
-CREATION_USER varchar(256),
+CREATION_USER varchar(256) DEFAULT 'System',
 CREATION_DATETIME timestamp,
 constraint PK_USER_ID primary key (ID));
 
@@ -18,7 +18,7 @@ VALUE varchar(256),
 VERSION int,
 CREATION_USER varchar(256),
 CREATION_DATETIME timestamp,
-ODOMETER int,
+ODOMETER int DEFAULT 0,
 LAST_ACCESSED_DATETIME timestamp,
 LAST_ACCESSED_USER varchar(256),
 LAST_MODIFIED_DATETIME timestamp,
