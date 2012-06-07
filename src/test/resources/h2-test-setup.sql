@@ -11,6 +11,7 @@ create table TAGS (
 ID identity,
 KEY varchar(256),
 VALUE varchar(256),
+TYPE varchar(256),
 constraint PK_TAG_ID primary key (ID));
 
 drop table if exists PROPERTIES;
