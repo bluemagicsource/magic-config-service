@@ -127,7 +127,7 @@ public class DatabaseRepositoryTest {
 	private class StubPropertiesDao implements PropertiesDao {
 
 		@Override
-		public String getPropertyValue(String propertyKey) {
+		public String getPropertyValue(String propertyKey, String user) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -254,9 +254,8 @@ public class DatabaseRepositoryTest {
 		}
 
 		@Override
-		public boolean insertProperty(String propertyKey, String propertyValue) {
-			// TODO Auto-generated method stub
-			return false;
+		public boolean insertProperty(String propertyKey, String propertyValue, String user) {
+			throw new UnsupportedOperationException();
 		}
 		
 	}

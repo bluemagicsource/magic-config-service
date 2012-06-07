@@ -99,10 +99,10 @@ public class DatabaseRepository implements DetailsRepository {
 		
 		String user = getUser(tags);
 		
-		String propertyWithTags = getNormalizedProperty(key);
+		String propertyWithTags = getNormalizedProperty(key, tags);
 		
-		// Go to the database and try to retrieve this property.		
-		String result = propertiesDao.getPropertyValue(propertyWithTags);
+		// Go to the database and try to retrieve this property.
+		String result = propertiesDao.getPropertyValue(propertyWithTags, user);
 		
 		return result;
 	}
@@ -110,7 +110,10 @@ public class DatabaseRepository implements DetailsRepository {
 	@Override
 	public PropertyDetails getPropertyDetails(URI key) {
 		
-		String propertyWithTags = getNormalizedProperty(key);
+		// Parse out all the tags...
+		Map<String, String> tags = TagUtils.parseTags(key);
+		
+		String propertyWithTags = getNormalizedProperty(key, tags);
 		
 		// Go to the database and try to retrieve the property details.
 		PropertyDto serviceProperty = propertiesDao.getProperty(propertyWithTags);
@@ -147,7 +150,10 @@ public class DatabaseRepository implements DetailsRepository {
 	@Override
 	public CompletePropertyDetails getCompletePropertyDetails(URI key) {
 		
-		String propertyWithTags = getNormalizedProperty(key);
+		// Parse out all the tags...
+		Map<String, String> tags = TagUtils.parseTags(key);
+		
+		String propertyWithTags = getNormalizedProperty(key, tags);
 		
 		// Go to the database and try to retrieve the property details.
 		CompletePropertyDto completePropertyDto = propertiesDao.getCompleteProperty(propertyWithTags);
