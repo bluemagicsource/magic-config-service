@@ -23,7 +23,7 @@ public class TagDaoJdbcImplTest {
 	public void testTagDoesntExist() {
 		
 		String value = tagDao.getTagById(1);
-		int id = tagDao.getTagId("empty","tag");
+		int id = tagDao.getTagId("empty","tag", "public");
 		
 		// make sure tag and id do not exist
 		Assert.assertNull(value);
@@ -33,7 +33,7 @@ public class TagDaoJdbcImplTest {
 	@Test
 	public void testInsertTag() {
 		
-		boolean inserted = tagDao.insertTag("system","test");
+	        boolean inserted = tagDao.insertTag("system","test", "public");
 		
 		Assert.assertTrue(inserted);
 		
@@ -41,7 +41,7 @@ public class TagDaoJdbcImplTest {
 		String value = tagDao.getTagById(1);
 		
 		// Try to pull the tag id out by key and value
-		int id = tagDao.getTagId("system", "test");
+		int id = tagDao.getTagId("system", "test", "public");
 		
 		Assert.assertNotNull(value);
 		Assert.assertTrue(id != -1);
@@ -52,7 +52,7 @@ public class TagDaoJdbcImplTest {
 	@Test
 	public void testDeleteTagById() {
 		
-		boolean inserted = tagDao.insertTag("system","test");
+	        boolean inserted = tagDao.insertTag("system","test", "public");
 		boolean deleted = tagDao.deleteTagById(1);
 		
 		Assert.assertTrue(deleted);

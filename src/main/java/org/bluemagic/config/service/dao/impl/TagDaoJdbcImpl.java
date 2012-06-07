@@ -6,24 +6,30 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 	
-	private static final String SELECT_TAG_ID = "SELECT ID FROM TAGS WHERE KEY=? AND VALUE=?";
+	private static final String SELECT_TAG_ID = "SELECT ID FROM TAGS WHERE KEY=? AND VALUE=? AND TYPE=?";
 
 	private static final String SELECT_TAG_BY_ID = "SELECT VALUE FROM TAGS WHERE ID=?";
 	
-	private static final String INSERT_TAG = "INSERT INTO TAGS (KEY,VALUE) VALUES (?, ?)";
+	private static final String INSERT_TAG = "INSERT INTO TAGS (KEY,VALUE,TYPE) VALUES (?, ?, ?)";
 	
 	private static final String DELETE_TAG_BY_ID = "DELETE FROM TAGS WHERE ID=?";
 	
-	/**
-	 * Get a specific tag id from the tag table by using the key value pair
-	 */
+
+    /**
+     * Get a specific tag id from the tag table by using the key value pair
+     *
+     * @param key tag key
+     * @param value tag value
+     * @param type tag type can be (public, private, user defined value)
+     * @return int tag id or -1 if tag does not exist
+     */
 	@Override
-	public int getTagId(String key, String value) {
+	public int getTagId(String key, String value, String type) {
 		
 		try {
 			
 			// Try to select the tag id from the table.  If the tag is not found, the result will be -1.
-			return getJdbcTemplate().queryForObject(SELECT_TAG_ID, new Object[] { key, value }, Integer.class);
+		        return getJdbcTemplate().queryForObject(SELECT_TAG_ID, new Object[] { key, value, type }, Integer.class);
 		} catch (EmptyResultDataAccessException erdae) {
 			
 			// Means the tag did not exist.
@@ -52,9 +58,9 @@ public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 	 * Insert a tag into the tag table using the specified key and value
 	 */
 	@Override
-	public boolean insertTag(String key, String value) {
+	public boolean insertTag(String key, String value, String type) {
 		
-		int rowsUpdated = getJdbcTemplate().update(INSERT_TAG, key, value);
+	        int rowsUpdated = getJdbcTemplate().update(INSERT_TAG, key, value, type);
 		
 		if (rowsUpdated == 1) {
 			return true;
