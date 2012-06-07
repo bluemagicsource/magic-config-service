@@ -22,20 +22,20 @@ public class PropertyDaoJdbcImplTest {
 	@Test
 	public void testPropertyDoesntExist() {
 		
-		String propertyKey = propertiesDao.getPropertyValue("test");
+		String propertyKey = propertiesDao.getPropertyValue("test","testUser");
 		
-		// MAKE SURE THE USER DOESN'T EXIST
+		// MAKE SURE THE PROPERTY DOESN'T EXIST
 		Assert.assertNull(propertyKey);
 	}
 	
 	@Test
 	public void testGetPropertyValue() {
 		
-		propertiesDao.insertProperty("1", "test1");
-		propertiesDao.insertProperty("2", "test2");
-		propertiesDao.insertProperty("3", "test3");
+		propertiesDao.insertProperty("1", "test1", "testUser");
+		propertiesDao.insertProperty("2", "test2", "testUser");
+		propertiesDao.insertProperty("3", "test3", "testUser");
 		
-		String property = propertiesDao.getPropertyValue("3");
+		String property = propertiesDao.getPropertyValue("3", "testUser2");
 		
 		Assert.assertEquals("test3", property);
 	}

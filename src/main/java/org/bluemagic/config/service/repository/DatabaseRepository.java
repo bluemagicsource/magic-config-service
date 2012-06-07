@@ -94,8 +94,9 @@ public class DatabaseRepository implements DetailsRepository {
 		
 		String propertyWithTags = getNormalizedProperty(key);
 		
-		// Go to the database and try to retrieve this property.		
-		String result = propertiesDao.getPropertyValue(propertyWithTags);
+		// Go to the database and try to retrieve this property.
+		String user = null; //@TODO - This needs to be fixed to work properly -DB
+		String result = propertiesDao.getPropertyValue(propertyWithTags, user);
 		
 		return result;
 	}
