@@ -8,38 +8,35 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class HistoricalPropertiesDaoJdbcImplTest {
 
-	private HistoricalPropertiesDao HistoricalPropertiesDao;
+	private HistoricalPropertiesDao historicalpropertiesDao;
 	
 	@Before
 	public void setUp() {
 		
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.test.h2.xml");
 		
-		// GET HISTORICAL PROPERTY DAO FROM CONTEXT
-		HistoricalPropertiesDao = ctx.getBean(HistoricalPropertiesDaoJdbcImpl.class);
+		// GET PROPERTY DAO FROM CONTEXT
+		historicalpropertiesDao = ctx.getBean(HistoricalPropertiesDaoJdbcImpl.class);
 	}
 	
 	@Test
 	public void testPropertyDoesntExist() {
 		
-		String historicalpropertyKey = HistoricalPropertiesDao.gethistoricalpropertyvalue("test");
+		String propertyKey = historicalpropertiesDao.getHistoricalPropertyValue("test","testUser");
 		
-		// MAKE SURE THE USER DOESN'T EXIST
-		Assert.assertNull(historicalpropertyKey);
+		// MAKE SURE THE PROPERTY DOESN'T EXIST
+		Assert.assertNull(propertyKey);
 	}
-	
-	
 	
 	@Test
-	public void testgethistoricalpropertyvalue() {
+	public void testGetPropertyValue() {
 		
-		HistoricalPropertiesDao.inserthistoricalproperty("1", "test1");
-		HistoricalPropertiesDao.inserthistoricalproperty("2", "test2");
-		HistoricalPropertiesDao.inserthistoricalproperty("3", "test3");
+		historicalpropertiesDao.insertHistoricalProperty("1", "test1", "testUser");
+		historicalpropertiesDao.insertHistoricalProperty("2", "test2", "testUser");
+		historicalpropertiesDao.insertHistoricalProperty("3", "test3", "testUser");
 		
-		String historicalproperty = HistoricalPropertiesDao.gethistoricalpropertyvalue("3");
+		String property = historicalpropertiesDao.getHistoricalPropertyValue("3", "testUser2");
 		
-		Assert.assertEquals("test3", historicalproperty);
+		Assert.assertEquals("test3", property);
 	}
-		
 }

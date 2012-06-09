@@ -1,20 +1,23 @@
 package org.bluemagic.config.service.dao;
+/* HISTORICAL PROPERTIES OVERVIEW
+ * Same layout as the PROPERTIES table, anytime there is an update or deletion in the PROPERTIES table
+ * the value that is deleted or the value before the update is copied to the HISTORICAL_PROPERTIES table.
+ * HISTORICAL_PROPERTIES only gets changed when a "property" is deleted or the "value" field of the property
+ * is changed. The ID's for the properties within HISTORICAL_PROPERTIES are not "unique".
+ * fin
+*/
 
-
-import org.bluemagic.config.api.service.CompletePropertyDetails;
-import org.bluemagic.config.api.service.PropertyDetails;
-import java.lang.String;  	
+import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
+import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
+import java.lang.String; 
 
 public interface HistoricalPropertiesDao {
 
-	 public boolean inserthistoricalproperty(String historicalpropertykey, String historicalpropertyvalue);
+    public boolean insertHistoricalProperty(String historicalPropertyKey, String historicalPropertyValue, String user);
 
-	    public String gethistoricalpropertyvalue(String historicalpropertyKey);
+    public String getHistoricalPropertyValue(String historicalPropertyKey, String user);
 
-	    public PropertyDetails getPropertyDetails(String historicalpropertyWithTags);
+	public PropertyDto getProperty(String key);
 
-	    public CompletePropertyDetails getCompletePropertyDetails(String historicalpropertyWithTags);
-	
-    // Delete method is omitted
-	
+	public CompletePropertyDto getCompleteProperty(String key);
 }
