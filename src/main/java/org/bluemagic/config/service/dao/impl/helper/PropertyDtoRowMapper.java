@@ -22,7 +22,13 @@ public class PropertyDtoRowMapper implements RowMapper<PropertyDto> {
 			String value = rs.getString("VALUE");
 			
 			int query = key.indexOf("?");
-			String baseKey = key.substring(0, query);
+			String baseKey;
+			if (query > 0) {
+				baseKey = key.substring(0, query);
+			}
+			else {
+				baseKey = key;
+			}
 			
 			URI original = new URI(baseKey);
 			URI located = new URI(key);
