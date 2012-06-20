@@ -82,6 +82,14 @@ public final class TagUtils {
     	return results;
     }
     
+
+    /**
+     * For Example:
+     * http://bluemaicsource.org/config/database/user?tags=@sean,security,production
+     * By the time we reach this method the tags= have been parsed off of the URI
+     * and is the input as "@sean,security,production". Now, this can be placed on by
+     * the user or by the server when it read say a certificate.
+     **/
     public static String parseUserFromSingleTags(String singleTags) {
 		
 		String result = null;
