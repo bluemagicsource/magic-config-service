@@ -28,7 +28,7 @@ constraint PK_PROP_ID primary key (ID),
 constraint UC_PROP_KEY unique (VALUE));
 
 create table HISTORICAL_PROPERTIES (
-ID identity,
+ID bigint,
 KEY varchar(256),
 VALUE varchar(256),
 VERSION int,
