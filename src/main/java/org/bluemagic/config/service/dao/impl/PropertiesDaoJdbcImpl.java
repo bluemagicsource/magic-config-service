@@ -1,8 +1,5 @@
 package org.bluemagic.config.service.dao.impl;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bluemagic.config.service.dao.PropertiesDao;
@@ -10,7 +7,6 @@ import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
 import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDtoRowMapper;
 import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 import org.bluemagic.config.service.dao.impl.helper.PropertyDtoRowMapper;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesDao {
@@ -42,10 +38,10 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	 * The creation user/date and last modified user/date will be automatically updated
 	 */
 	@Override
-	public boolean insertProperty(String propertyKey, String propertyValue, String user) {
+	public boolean insertProperty(String key, String value, String user) {
 
 		int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE,
-				propertyKey, propertyValue, user, user);
+				key, value, user, user);
 		
 		if (rowsUpdated == 1) {
 			return true;
@@ -54,36 +50,36 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 		}
 	}
 
+	/**
+	 * Gets a property value based on property key
+	 * 
+	 * Automatically updated last accessed date and increments odometer
+	 * 
+	 * @TODO Handle error if updating last accessed date and odometer fails -DB
+	 */
 	@Override
-	public String getPropertyValue(String propertyKey, String user) {
+	public String getPropertyValue(String key, String user) {
 
 		try {
 			// Select property id and value based on property key
-			// RowMap fields from property table to property object
-			Property property = getJdbcTemplate().queryForObject(SELECT_PROPERTY,
-					new Object[] { propertyKey }, 
-					new RowMapper<Property>() {
-			            public Property mapRow(ResultSet rs, int rowNum) throws SQLException {
-			            	Property property = new Property();
-			                property.setID(rs.getInt("ID"));
-			                property.setValue(rs.getString("VALUE"));
-			                return property;
-			            }
-			        });
+			// Property id will be used to update odometer and last accessed date
+			PropertyDto property = getJdbcTemplate().queryForObject(SELECT_PROPERTY, 
+																	new Object[] { key }, 
+																	new PropertyDtoRowMapper());
 			
 			// If result is not null, update last accessed date and odometer
 			if (property != null) {
-				propertyHasBeenAccessed (property.getID(), user);
+				propertyHasBeenAccessed (property.getId(), user);
 			}
 			
-			return property.getValue();
+			return (String) property.getProperty().getValue();
 		} catch (Throwable t) {
 
 			if (LOG.isErrorEnabled()) {
 				LOG.error(t.getMessage(), t);
 			}
 			
-			// Means the propertyKey did not exist.
+			// Means the key did not exist.
 			return null;
 		}
 	}
@@ -127,12 +123,13 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	/**
 	 * When a property has been accessed update the last accessed date,
 	 * last accessed user, and the odometer
-	 * @param propertyID
+	 * @param id - property id
 	 * @return true if row has been updated
 	 */
-	private boolean propertyHasBeenAccessed (int propertyID, String user) {
+	private boolean propertyHasBeenAccessed (int id, String user) {
 		int rowsUpdated = getJdbcTemplate().update(UPDATE_LAST_ACCESSED_DATE_AND_ODOMETER,
-				user, propertyID);
+													user, 
+													id);
 		
 		if (rowsUpdated == 1) {
 			return true;
@@ -141,29 +138,4 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 		}
 	}
 	
-	/**
-	 * Inner class to allow for row mapping with property table
-	 */
-	private class Property
-	{
-		private int id;
-		private String value;
-		
-		public int getID() {
-            return id;
-	    }
-	
-	    public void setID(int id) {
-	            this.id = id;
-	    }
-	    
-	    public String getValue() {
-            return value;
-	    }
-	
-	    public void setValue(String value) {
-	            this.value = value;
-	    }
-	 
-	}
 }
