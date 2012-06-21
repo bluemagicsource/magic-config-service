@@ -25,10 +25,12 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 			"(KEY, VALUE, CREATION_USER, CREATION_DATETIME, LAST_MODIFIED_DATETIME, LAST_MODIFIED_USER) " +
 			"VALUES (?, ?, ?, sysdate, sysdate, ?)";
 	
+	private static final String SELECT_ODOMETER = "SELECT ODOMETER FROM PROPERTIES WHERE ID=?";
+	
 	private static final String UPDATE_LAST_ACCESSED_DATE_AND_ODOMETER = "UPDATE PROPERTIES " +
 			"SET LAST_ACCESSED_DATETIME = sysdate, " +
 			"LAST_ACCESSED_USER = ?, " +
-			"ODOMETER = ODOMETER+1 " +
+			"ODOMETER = ? " +
 			"WHERE ID = ?";
 
 	/**
@@ -127,15 +129,21 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	 * @return true if row has been updated
 	 */
 	private boolean propertyHasBeenAccessed (int id, String user) {
+		boolean success = false;
+		
+		// Get the current odometer
+		int odometer = getJdbcTemplate().queryForInt(SELECT_ODOMETER, new Object[] { id });
+		
 		int rowsUpdated = getJdbcTemplate().update(UPDATE_LAST_ACCESSED_DATE_AND_ODOMETER,
 													user, 
+													odometer+1,
 													id);
 		
 		if (rowsUpdated == 1) {
-			return true;
-		} else {
-			return false;
+			success = true;
 		}
+		
+		return success;
 	}
 	
 }
