@@ -13,7 +13,7 @@ import java.lang.String;
 
 public interface HistoricalPropertiesDao {
 
-    public boolean insertHistoricalProperty(int historicalId, String historicalPropertyKey, String historicalPropertyValue, java.sql.Timestamp historicalCreationDateTime, String historicalCreationUser, int historicalOdometer, java.sql.Timestamp historicalLastAccessedDateTime, String historicalLastAccessedUser, java.sql.Timestamp historicalLastModifiedDateTime, String historicalLastModifiedUser);
+    public boolean insertHistoricalProperty(String historicalPropertyKey);
 
     public String getHistoricalPropertyValue(String historicalPropertyKey, String user);
 

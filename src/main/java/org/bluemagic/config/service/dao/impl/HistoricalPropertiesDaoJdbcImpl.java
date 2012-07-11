@@ -29,11 +29,11 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 			                                             + "CREATION_USER, CREATION_DATETIME, ODOMETER, "
 			                                             + "LAST_ACCESSED_DATETIME, LAST_ACCESSED_USER, "
 			                                             + "LAST_MODIFIED_DATETIME, LAST_MODIFIED_USER) "
-			                                             + "VALUES (SELECT ID, KEY, VALUE,"
+			                                             + "SELECT ID, KEY, VALUE,"
 					                                     + "CREATION_USER, CREATION_DATETIME, ODOMETER, "
 					                                     + "LAST_ACCESSED_DATETIME, LAST_ACCESSED_USER, "
 					                                     + "LAST_MODIFIED_DATETIME, LAST_MODIFIED_USER "
-					                                     + "FROM PROPERTIES WHERE KEY =?)";
+					                                     + "FROM PROPERTIES WHERE KEY=?";
 	
 	private static final String UPDATE_LAST_ACCESSED_DATE_AND_ODOMETER = "UPDATE HISTORICAL_PROPERTIES " +
 			"SET LAST_ACCESSED_DATETIME = sysdate, " +
@@ -48,10 +48,9 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 	 * The creation user/date and last modified user/date will be automatically updated
 	 */
 	@Override
-	public boolean insertHistoricalProperty(int historicalId, String historicalPropertyKey, String historicalPropertyValue, java.sql.Timestamp historicalCreationDateTime, String historicalCreationUser, int historicalOdometer, java.sql.Timestamp historicalLastAccessedDateTime, String historicalLastAccessedUser, java.sql.Timestamp historicalLastModifiedDateTime, String historicalLastModifiedUser) {
+	public boolean insertHistoricalProperty(String historicalPropertyKey) {
 
-		int rowsUpdated = getJdbcTemplate().update(INSERT_HISTORICAL_PROPERTY_VALUE, historicalId,
-				historicalPropertyKey, historicalPropertyValue, historicalCreationDateTime, historicalCreationUser, historicalOdometer, historicalLastAccessedDateTime, historicalLastAccessedUser, historicalLastModifiedDateTime, historicalLastModifiedUser);
+		int rowsUpdated = getJdbcTemplate().update(INSERT_HISTORICAL_PROPERTY_VALUE, historicalPropertyKey);
 		
 		if (rowsUpdated == 1) {
 			return true;
