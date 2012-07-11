@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bluemagic.config.service.PropertyService;
+import org.bluemagic.config.api.service.PropertyService;
 import org.bluemagic.config.service.utils.ServletUtils;
 import org.bluemagic.config.service.utils.TagUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,22 +31,95 @@ public class PropertyController {
 	 */
 	@RequestMapping(value="/**", method=RequestMethod.GET)
 	public @ResponseBody ResponseEntity<String> getProperty(HttpServletRequest request) {
+		
+		ResponseEntity<String> result = null;
+		
 		String property = getPropertyFromRequest(request);
 		
 		// Retrieve the value for this Property.
-		String rval = propertyService.getProperty(property);
+		String rval = propertyService.read(property);
 		
 		if (LOG.isInfoEnabled()) {
-			LOG.info("[GET] Resolved property: " + property + " ----> " + rval);
+			LOG.info("[GET] Resolved value: " + property + " ----> " + rval);
 		}
 
-		if (rval == null) {
-			throw new RuntimeException("Property " + property + " not found!");
+		if (rval != null) {
+			
+			result = new ResponseEntity<String>(HttpStatus.OK);
+		} else {
+			
+			result = new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		}
+
+		return result;
+	}
+	
+	/**
+	 * This method handles all requests to create a new property on the server.  The URL
+	 * itself is the property, and the value should be in the header.
+	 */
+	@RequestMapping(value="/**", method=RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> createProperty(HttpServletRequest request) {
+		
+		// This will be the response sent back to the agent.
+		ResponseEntity<String> result = null;
+		
+		String value = request.getParameter("propertyValue");
+		
+		if (value != null) {
+			
+			// Parse the HttpServletRequest to get the property out.
+			String property = getPropertyFromRequest(request);
+			
+			// Try to create the property.
+			boolean rval = propertyService.create(property, value);
+			
+			if (rval) {
+				
+				result = new ResponseEntity<String>(HttpStatus.CREATED);
+			} else {
+				
+				result = new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+		} else {
+			
+			result = new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<String>(rval, HttpStatus.OK);
+		return result;
 	}
-
+	
+	/**
+	 * This method handles all requests to remove a property from the server.
+	 */
+	@RequestMapping(value="/**", method=RequestMethod.DELETE)
+	public @ResponseBody ResponseEntity<String> deleteProperty(HttpServletRequest request) {
+		String property = getPropertyFromRequest(request);
+		
+		if (LOG.isInfoEnabled()) {
+			LOG.info("[DELETE] Deleted property: " + property.toString());
+		}
+		
+		// see http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+		// 200 (OK) If the response includes an entity describing the status.
+		// 202 (ACCEPTED) If the action has not yet been enacted.
+		// 204 (NO CONTENT) If the action has been enacted but the response does not include an entity.
+		return new ResponseEntity<String>(HttpStatus.ACCEPTED);
+	}
+	
+	/**
+	 * This method handles all requests to update a property with new values.
+	 */
+	@RequestMapping(value="/**", method=RequestMethod.PUT)
+	public @ResponseBody ResponseEntity<String> updateProperty(@RequestBody String json) {
+		if (LOG.isInfoEnabled()) {
+			LOG.info("[PUT] Updating property: " + json);
+		}
+		
+		return new ResponseEntity<String>(json, HttpStatus.OK);
+	}
+	
 	/**
 	 * Helper method that extracts the full property name from the HTTP Request
 	 * object.
@@ -58,10 +131,11 @@ public class PropertyController {
 	 *                 tags ordered and appended on.
 	 */
 	private String getPropertyFromRequest(HttpServletRequest request) {
+		
 		// Get the base property from the URI.
 		String baseProperty = ServletUtils.getProperty(request, "/property/");
 		
-		// Get that tags if there are any.
+		// Get the tags if there are any.
 		String orderedTags = getTagParameters(request);
 		
 		// Start building the full Property URI by adding on the tags.
@@ -93,55 +167,6 @@ public class PropertyController {
 			orderedTags = TagUtils.reorder(unorderedTags);
 		}
 		return orderedTags;
-	}
-	
-	/**
-	 * This method handles all requests to create a new property on the server.  The Request
-	 * entity should be in a JSON format.
-	 */
-	@RequestMapping(value="/**", method=RequestMethod.POST)
-	public @ResponseBody ResponseEntity<String> createProperty(@RequestBody String json) {
-		if (LOG.isInfoEnabled()) {
-			LOG.info("[POST] Creating property: " + json);
-		}
-		
-		// see http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
-		// 200 (OK) If resource cannot be identified by a URI, but has content that describes the result.
-		// 201 (CREATED) If a resource has been created, and can be identified by a URI.  The response
-		//               should also contain an entity which describes the status of the request and
-		//               refers to the new resource, and a Location header.
-		// 204 (NO CONTENT) If resource cannot be identified by a URI, and no content in the response.
-		return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
-	}
-	
-	/**
-	 * This method handles all requests to remove a property from the server.
-	 */
-	@RequestMapping(value="/**", method=RequestMethod.DELETE)
-	public @ResponseBody ResponseEntity<String> deleteProperty(HttpServletRequest request) {
-		String property = getPropertyFromRequest(request);
-		
-		if (LOG.isInfoEnabled()) {
-			LOG.info("[DELETE] Deleted property: " + property.toString());
-		}
-		
-		// see http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
-		// 200 (OK) If the response includes an entity describing the status.
-		// 202 (ACCEPTED) If the action has not yet been enacted.
-		// 204 (NO CONTENT) If the action has been enacted but the response does not include an entity.
-		return new ResponseEntity<String>(HttpStatus.ACCEPTED);
-	}
-	
-	/**
-	 * This method handles all requests to update a property with new values.
-	 */
-	@RequestMapping(value="/**", method=RequestMethod.PUT)
-	public @ResponseBody ResponseEntity<String> updateProperty(@RequestBody String json) {
-		if (LOG.isInfoEnabled()) {
-			LOG.info("[PUT] Updating property: " + json);
-		}
-		
-		return new ResponseEntity<String>(json, HttpStatus.OK);
 	}
 
 	public PropertyService getPropertyService() {
