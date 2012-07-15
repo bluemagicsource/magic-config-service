@@ -4,7 +4,7 @@ package org.bluemagic.config.service;
  * The service is the interface that all implementations can use including
  * but not limited to the restful service, command line client, thick client....
  **/
-public class PropertyServiceImpl {
+public interface PropertyService {
     
     /**
      * Creates a new property and value combination
