@@ -6,6 +6,10 @@ import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 public interface PropertiesDao {
 
     public boolean insertProperty(String propertyKey, String propertyValue, String user);
+    
+    public boolean updatePropertyById(int property_id, String key, String value, String user);
+    
+    public boolean deletePropertyById(int property_id);
 
     public String getPropertyValue(String propertyKey, String user);
 
@@ -13,7 +17,4 @@ public interface PropertiesDao {
 
 	public CompletePropertyDto getCompleteProperty(String key);
 	
-	//public boolean deletePropertyById(int property_id);
-	
-	//public boolean updatePropertyById(int property_id, String key, String value, String user);
 }

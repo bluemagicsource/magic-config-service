@@ -26,9 +26,9 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	
 	private static final String UPDATE_PROPERTY_BY_ID = "UPDATE PROPERTIES " +
 			"SET KEY = ?, " +
-			"VALUE = ?," +
+			"VALUE = ?, " +
 			"LAST_MODIFIED_DATETIME = sysdate, " +
-			"LAST_MODIFIED_USER = ?, " +
+			"LAST_MODIFIED_USER = ? " +
 			"WHERE ID = ?";
 				
 	
@@ -51,12 +51,44 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	 * Properties are made up of key and value pairs
 	 * 
 	 * The creation user/date and last modified user/date will be automatically updated
+	 * @return true if row has been inserted
 	 */
 	@Override
 	public boolean insertProperty(String key, String value, String user) {
 
 		int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE,
 				key, value, user, user);
+		
+		if (rowsUpdated == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Updates a property based on property id 
+	 * @return true if row has been updated
+	 */
+	@Override
+	public boolean updatePropertyById(int id, String key, String value, String user) {
+		int rowsUpdated = getJdbcTemplate().update(UPDATE_PROPERTY_BY_ID,
+				 key, value, user, id);
+		
+		if (rowsUpdated == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Delete a property based on property id 
+	 * @return true if row has been deleted
+	 */
+	@Override
+	public boolean deletePropertyById(int id) {
+		int rowsUpdated = getJdbcTemplate().update(DELETE_PROPERTY_BY_ID, id);
 		
 		if (rowsUpdated == 1) {
 			return true;
@@ -98,34 +130,12 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 			return null;
 		}
 	}
-	/*
-	@Override
-	public boolean updatePropertyById(int property_id, String key, String value, String user) {
-		int rowsUpdated = getJdbcTemplate().update(UPDATE_PROPERTY_BY_ID,
-				 key, value, user, property_id);
-		
-		if (rowsUpdated == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 	
-	
-	@Override
-	public boolean deletePropertyById(int property_id) {
-		
-		int rowsUpdated = getJdbcTemplate().update(DELETE_PROPERTY_BY_ID, property_id);
-		
-		if (rowsUpdated == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	*/
-
-
+	/**
+	 * Gets brief details about the property based on property key.
+	 * Can access property id, key, value
+	 * @return PropertyDto object or null if not found
+	 */
 	@Override
 	public PropertyDto getProperty(String key) {
 		
@@ -143,6 +153,10 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 		}
 	}
 
+	/**
+	 * Gets complete details about the property based on property key.
+	 * @return CompletePropertyDto object or null if not found
+	 */
 	@Override
 	public CompletePropertyDto getCompleteProperty(String key) {
 		

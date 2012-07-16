@@ -6,6 +6,7 @@ import org.bluemagic.config.api.tag.Tag;
 import org.bluemagic.config.service.ServiceTag;
 import org.bluemagic.config.service.dao.PropertiesDao;
 import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
+import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,16 +33,23 @@ public class PropertyDaoJdbcImplTest {
 		// MAKE SURE THE PROPERTY DOESN'T EXIST
 		Assert.assertNull(value);
 	}
-/*
+
 	@Test
-	public void testupdatePropertyById() {
-		String value = propertiesDao.insertProperty("system", "abc", "testUser", "P1");
+	public void testUpdatePropertyById() {
+		boolean inserted = propertiesDao.insertProperty("system","test", "testUser");
 		
+		PropertyDto property = propertiesDao.getProperty("system");
+		int id = property.getId();
 		
-		// MAKE SURE THE PROPERTY DOESN'T EXIST
-		Assert.assertNull(value);
+		boolean updated = propertiesDao.updatePropertyById(id,"system", "abc", "testUser");
+		
+		Assert.assertTrue(updated);
+		
+		String value = propertiesDao.getPropertyValue("system", "testUser");
+		
+		Assert.assertEquals("abc", value);
 	}
-*/
+
 	@Test
 	public void testGetPropertyValue() {
 		
@@ -54,24 +62,22 @@ public class PropertyDaoJdbcImplTest {
 		Assert.assertEquals("test3", value);
 	}
 	
-	/*
 	@Test
 	public void testDeletePropertyById() {
+	    boolean inserted = propertiesDao.insertProperty("system","test", "testUser");
+	    
+	    PropertyDto property = propertiesDao.getProperty("system");
+		int id = property.getId();
 		
-	        boolean inserted = PropertiesDao.insertProperty("system","test", "public");
-		boolean deleted = PropertiesDao.deletePropertyById(1);
+		boolean deleted = propertiesDao.deletePropertyById(id);
 		
 		Assert.assertTrue(deleted);
 		
 		// Try to pull the property out, should return null
-		String value = PropertiesDao.getPropertyValue(1);
+		String value = propertiesDao.getPropertyValue("system","testUser");
 		
 		Assert.assertNull(value);
 	}
-	
-	}
-*/
-
 	
 	@Test
 	public void testOdometerIncrementing() {

@@ -257,6 +257,17 @@ public class DatabaseRepositoryTest {
 		public boolean insertProperty(String propertyKey, String propertyValue, String user) {
 			throw new UnsupportedOperationException();
 		}
+
+		@Override
+		public boolean deletePropertyById(int property_id) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean updatePropertyById(int property_id, String key,
+				String value, String user) {
+			throw new UnsupportedOperationException();
+		}
 		
 	}
 	
