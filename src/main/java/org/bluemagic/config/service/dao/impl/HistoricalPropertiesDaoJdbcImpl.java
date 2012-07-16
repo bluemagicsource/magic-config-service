@@ -1,8 +1,5 @@
 package org.bluemagic.config.service.dao.impl;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bluemagic.config.service.dao.HistoricalPropertiesDao;
@@ -10,7 +7,6 @@ import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
 import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDtoRowMapper;
 import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 import org.bluemagic.config.service.dao.impl.helper.PropertyDtoRowMapper;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements HistoricalPropertiesDao {
@@ -35,53 +31,36 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 					                                     + "LAST_MODIFIED_DATETIME, LAST_MODIFIED_USER "
 					                                     + "FROM PROPERTIES WHERE KEY=?";
 	
-	private static final String UPDATE_LAST_ACCESSED_DATE_AND_ODOMETER = "UPDATE HISTORICAL_PROPERTIES " +
-			"SET LAST_ACCESSED_DATETIME = sysdate, " +
-			"LAST_ACCESSED_USER = ?, " +
-			"ODOMETER = ODOMETER+1 " +
-			"WHERE ID = ?";
 
 	/**
-	 * Inserts a new property into the property table 
-	 * Properties are made up of key and value pairs
-	 * 
-	 * The creation user/date and last modified user/date will be automatically updated
+	 * Inserts an existing property into the historical properties.
+	 * @return false if unable to insert row
 	 */
 	@Override
 	public boolean insertHistoricalProperty(String historicalPropertyKey) {
-
+		boolean success = false;
+		
 		int rowsUpdated = getJdbcTemplate().update(INSERT_HISTORICAL_PROPERTY_VALUE, historicalPropertyKey);
 		
 		if (rowsUpdated == 1) {
-			return true;
-		} else {
-			return false;
-		}
+			success = true;
+		} 
+		
+		return success;
 	}
 
+	/**
+	 * Get a historical property value based on historical property key
+	 */
 	@Override
 	public String getHistoricalPropertyValue(String historicalPropertyKey, String user) {
 
 		try {
-			// Select property id and value based on property key
-			// RowMap fields from property table to property object
-			Property property = getJdbcTemplate().queryForObject(SELECT_PROPERTY,
+			PropertyDto property = getJdbcTemplate().queryForObject(SELECT_PROPERTY, 
 					new Object[] { historicalPropertyKey }, 
-					new RowMapper<Property>() {
-			            public Property mapRow(ResultSet rs, int rowNum) throws SQLException {
-			            	Property property = new Property();
-			                property.setID(rs.getInt("ID"));
-			                property.setValue(rs.getString("VALUE"));
-			                return property;
-			            }
-			        });
+					new PropertyDtoRowMapper());
 			
-			// If result is not null, update last accessed date and odometer
-			if (property != null) {
-				propertyHasBeenAccessed (property.getID(), user);
-			}
-			
-			return property.getValue();
+			return (String) property.getProperty().getValue();
 		} catch (Throwable t) {
 
 			if (LOG.isErrorEnabled()) {
@@ -93,12 +72,19 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 		}
 	}
 
+	/**
+	 * Get brief details about the historical property based on historical property key.
+	 * Can access property id, key, value
+	 * @return PropertyDto object or null if not found
+	 */
 	@Override
-	public PropertyDto getProperty(String key) {
+	public PropertyDto getHistoricalProperty(String historicalPropertyKey) {
 		
 		try {
 			
-			return getJdbcTemplate().queryForObject(SELECT_PROPERTY, new Object[] { key }, new PropertyDtoRowMapper());
+			return getJdbcTemplate().queryForObject(SELECT_PROPERTY, 
+													new Object[] { historicalPropertyKey }, 
+													new PropertyDtoRowMapper());
 		} catch (Throwable t) {
 			
 			if (LOG.isErrorEnabled()) {
@@ -110,13 +96,17 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 		}
 	}
 
+	/**
+	 * Get complete details about the historical property based on historical property key.
+	 * @return CompletePropertyDto object or null if not found
+	 */
 	@Override
-	public CompletePropertyDto getCompleteProperty(String key) {
+	public CompletePropertyDto getCompleteHistoricalProperty(String historicalPropertyKey) {
 		
 		try {
 			
 			return getJdbcTemplate().queryForObject(SELECT_COMPLETE_PROPERTY, 
-					                                new Object[] { key }, 
+					                                new Object[] { historicalPropertyKey }, 
 					                                new CompletePropertyDtoRowMapper());
 		} catch (Throwable t) {
 			
@@ -129,47 +119,5 @@ public class HistoricalPropertiesDaoJdbcImpl extends JdbcDaoSupport implements H
 		}
 	}
 	
-	/**
-	 * When a property has been accessed update the last accessed date,
-	 * last accessed user, and the odometer
-	 * @param propertyID
-	 * @return true if row has been updated
-	 */
-	private boolean propertyHasBeenAccessed (int propertyID, String user) {
-		int rowsUpdated = getJdbcTemplate().update(UPDATE_LAST_ACCESSED_DATE_AND_ODOMETER,
-				user, propertyID);
-		
-		if (rowsUpdated == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * Inner class to allow for row mapping with property table
-	 */
-	private class Property
-	{
-		private int id;
-		private String value;
-		
-		public int getID() {
-            return id;
-	    }
-	
-	    public void setID(int id) {
-	            this.id = id;
-	    }
-	    
-	    public String getValue() {
-            return value;
-	    }
-	
-	    public void setValue(String value) {
-	            this.value = value;
-	    }
-	 
-	}
 }
 

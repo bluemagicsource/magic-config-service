@@ -17,7 +17,7 @@ public interface HistoricalPropertiesDao {
 
     public String getHistoricalPropertyValue(String historicalPropertyKey, String user);
 
-	public PropertyDto getProperty(String key);
+	public PropertyDto getHistoricalProperty(String historicalPropertyKey);
 
-	public CompletePropertyDto getCompleteProperty(String key);
+	public CompletePropertyDto getCompleteHistoricalProperty(String historicalPropertyKey);
 }
