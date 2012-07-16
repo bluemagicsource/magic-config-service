@@ -32,7 +32,16 @@ public class PropertyDaoJdbcImplTest {
 		// MAKE SURE THE PROPERTY DOESN'T EXIST
 		Assert.assertNull(value);
 	}
-	
+/*
+	@Test
+	public void testupdatePropertyById() {
+		String value = propertiesDao.insertProperty("system", "abc", "testUser", "P1");
+		
+		
+		// MAKE SURE THE PROPERTY DOESN'T EXIST
+		Assert.assertNull(value);
+	}
+*/
 	@Test
 	public void testGetPropertyValue() {
 		
@@ -44,6 +53,25 @@ public class PropertyDaoJdbcImplTest {
 		
 		Assert.assertEquals("test3", value);
 	}
+	
+	/*
+	@Test
+	public void testDeletePropertyById() {
+		
+	        boolean inserted = PropertiesDao.insertProperty("system","test", "public");
+		boolean deleted = PropertiesDao.deletePropertyById(1);
+		
+		Assert.assertTrue(deleted);
+		
+		// Try to pull the property out, should return null
+		String value = PropertiesDao.getPropertyValue(1);
+		
+		Assert.assertNull(value);
+	}
+	
+	}
+*/
+
 	
 	@Test
 	public void testOdometerIncrementing() {
