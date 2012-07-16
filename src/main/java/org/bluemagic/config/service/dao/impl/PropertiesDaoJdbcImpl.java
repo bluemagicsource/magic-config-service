@@ -21,6 +21,17 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 			                                             + "LAST_MODIFIED_DATETIME, LAST_MODIFIED_USER "
 			                                             + "FROM PROPERTIES WHERE KEY=?";
 	
+	private static final String DELETE_PROPERTY_BY_ID = "DELETE FROM PROPERTIES WHERE ID=?";
+	
+	
+	private static final String UPDATE_PROPERTY_BY_ID = "UPDATE PROPERTIES " +
+			"SET KEY = ?, " +
+			"VALUE = ?," +
+			"LAST_MODIFIED_DATETIME = sysdate, " +
+			"LAST_MODIFIED_USER = ?, " +
+			"WHERE ID = ?";
+				
+	
 	private static final String INSERT_PROPERTY_VALUE = "INSERT INTO PROPERTIES " +
 			"(KEY, VALUE, CREATION_USER, CREATION_DATETIME, LAST_MODIFIED_DATETIME, LAST_MODIFIED_USER) " +
 			"VALUES (?, ?, ?, sysdate, sysdate, ?)";
@@ -32,6 +43,8 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 			"LAST_ACCESSED_USER = ?, " +
 			"ODOMETER = ? " +
 			"WHERE ID = ?";
+	
+	
 
 	/**
 	 * Inserts a new property into the property table 
@@ -85,6 +98,33 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 			return null;
 		}
 	}
+	/*
+	@Override
+	public boolean updatePropertyById(int property_id, String key, String value, String user) {
+		int rowsUpdated = getJdbcTemplate().update(UPDATE_PROPERTY_BY_ID,
+				 key, value, user, property_id);
+		
+		if (rowsUpdated == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	@Override
+	public boolean deletePropertyById(int property_id) {
+		
+		int rowsUpdated = getJdbcTemplate().update(DELETE_PROPERTY_BY_ID, property_id);
+		
+		if (rowsUpdated == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	*/
+
 
 	@Override
 	public PropertyDto getProperty(String key) {
@@ -128,6 +168,7 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	 * @param id - property id
 	 * @return true if row has been updated
 	 */
+
 	private boolean propertyHasBeenAccessed (int id, String user) {
 		boolean success = false;
 		

@@ -12,4 +12,8 @@ public interface PropertiesDao {
 	public PropertyDto getProperty(String key);
 
 	public CompletePropertyDto getCompleteProperty(String key);
+	
+	//public boolean deletePropertyById(int property_id);
+	
+	//public boolean updatePropertyById(int property_id, String key, String value, String user);
 }
