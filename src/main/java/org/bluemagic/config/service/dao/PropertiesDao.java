@@ -5,7 +5,7 @@ import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 
 public interface PropertiesDao {
 
-    public boolean insertProperty(String propertyKey, String propertyValue, String user);
+    public int insertProperty(String propertyKey, String propertyValue, String user);
     
     public boolean updatePropertyById(int property_id, String key, String value, String user);
     

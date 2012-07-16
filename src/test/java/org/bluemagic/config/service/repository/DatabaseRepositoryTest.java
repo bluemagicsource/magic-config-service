@@ -254,7 +254,7 @@ public class DatabaseRepositoryTest {
 		}
 
 		@Override
-		public boolean insertProperty(String propertyKey, String propertyValue, String user) {
+		public int insertProperty(String propertyKey, String propertyValue, String user) {
 			throw new UnsupportedOperationException();
 		}
 

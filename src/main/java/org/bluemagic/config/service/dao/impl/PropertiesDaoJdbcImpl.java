@@ -1,5 +1,9 @@
 package org.bluemagic.config.service.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bluemagic.config.service.dao.PropertiesDao;
@@ -7,7 +11,10 @@ import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
 import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDtoRowMapper;
 import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 import org.bluemagic.config.service.dao.impl.helper.PropertyDtoRowMapper;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesDao {
 
@@ -51,19 +58,33 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	 * Properties are made up of key and value pairs
 	 * 
 	 * The creation user/date and last modified user/date will be automatically updated
-	 * @return true if row has been inserted
+	 * @return id of newly inserted row or -1 if unable to insert row
 	 */
 	@Override
-	public boolean insertProperty(String key, String value, String user) {
-
-		int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE,
-				key, value, user, user);
+	public int insertProperty(final String key, final String value, final String user) {
+		int id = -1;
+		
+		// Used to keep track of auto-generated property id
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		
+		int rowsUpdated = getJdbcTemplate().update(new PreparedStatementCreator() {
+	        public PreparedStatement createPreparedStatement(
+	            Connection connection) throws SQLException {
+	                PreparedStatement ps = connection.prepareStatement(INSERT_PROPERTY_VALUE);
+	                ps.setString(1, key);
+	                ps.setString(2, value);
+	                ps.setString(3, user);
+	                ps.setString(4, user);
+	                return ps;
+	            }
+	        }, keyHolder);
 		
 		if (rowsUpdated == 1) {
-			return true;
-		} else {
-			return false;
-		}
+			// Row was inserted, get auto-generated property id
+			id = keyHolder.getKey().intValue();
+		} 
+		
+		return id;
 	}
 	
 	/**
@@ -72,14 +93,16 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	 */
 	@Override
 	public boolean updatePropertyById(int id, String key, String value, String user) {
+		boolean success = false;
+		
 		int rowsUpdated = getJdbcTemplate().update(UPDATE_PROPERTY_BY_ID,
 				 key, value, user, id);
 		
 		if (rowsUpdated == 1) {
-			return true;
-		} else {
-			return false;
-		}
+			success = true;
+		} 
+		
+		return success;
 	}
 	
 	/**
@@ -88,13 +111,15 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	 */
 	@Override
 	public boolean deletePropertyById(int id) {
+		boolean success = false;
+		
 		int rowsUpdated = getJdbcTemplate().update(DELETE_PROPERTY_BY_ID, id);
 		
 		if (rowsUpdated == 1) {
-			return true;
-		} else {
-			return false;
-		}
+			success = true;
+		} 
+		
+		return success;
 	}
 
 	/**

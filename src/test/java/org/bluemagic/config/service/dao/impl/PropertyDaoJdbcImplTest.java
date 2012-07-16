@@ -6,7 +6,6 @@ import org.bluemagic.config.api.tag.Tag;
 import org.bluemagic.config.service.ServiceTag;
 import org.bluemagic.config.service.dao.PropertiesDao;
 import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
-import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +32,17 @@ public class PropertyDaoJdbcImplTest {
 		// MAKE SURE THE PROPERTY DOESN'T EXIST
 		Assert.assertNull(value);
 	}
+	
+	@Test
+	public void testInsertProperty() {
+		int id = propertiesDao.insertProperty("system","test", "testUser");
+		
+		Assert.assertNotSame(-1, id);
+	}
 
 	@Test
 	public void testUpdatePropertyById() {
-		boolean inserted = propertiesDao.insertProperty("system","test", "testUser");
-		
-		PropertyDto property = propertiesDao.getProperty("system");
-		int id = property.getId();
+		int id = propertiesDao.insertProperty("system","test", "testUser");
 		
 		boolean updated = propertiesDao.updatePropertyById(id,"system", "abc", "testUser");
 		
@@ -49,7 +52,21 @@ public class PropertyDaoJdbcImplTest {
 		
 		Assert.assertEquals("abc", value);
 	}
-
+	
+	@Test
+	public void testDeletePropertyById() {
+	    int id = propertiesDao.insertProperty("system","test", "testUser");
+		
+		boolean deleted = propertiesDao.deletePropertyById(id);
+		
+		Assert.assertTrue(deleted);
+		
+		// Try to pull the property out, should return null
+		String value = propertiesDao.getPropertyValue("system","testUser");
+		
+		Assert.assertNull(value);
+	}
+	
 	@Test
 	public void testGetPropertyValue() {
 		
@@ -60,23 +77,6 @@ public class PropertyDaoJdbcImplTest {
 		String value = propertiesDao.getPropertyValue("3", "testUser2");
 		
 		Assert.assertEquals("test3", value);
-	}
-	
-	@Test
-	public void testDeletePropertyById() {
-	    boolean inserted = propertiesDao.insertProperty("system","test", "testUser");
-	    
-	    PropertyDto property = propertiesDao.getProperty("system");
-		int id = property.getId();
-		
-		boolean deleted = propertiesDao.deletePropertyById(id);
-		
-		Assert.assertTrue(deleted);
-		
-		// Try to pull the property out, should return null
-		String value = propertiesDao.getPropertyValue("system","testUser");
-		
-		Assert.assertNull(value);
 	}
 	
 	@Test
@@ -91,8 +91,8 @@ public class PropertyDaoJdbcImplTest {
 		ServiceTag emptyOdometer = new ServiceTag("odometer","0");
 		Assert.assertTrue(attributes.contains(emptyOdometer));
 		
-		String value = propertiesDao.getPropertyValue("1", "testUser2");
-		String value2 = propertiesDao.getPropertyValue("1", "testUser3");
+		propertiesDao.getPropertyValue("1", "testUser2");
+		propertiesDao.getPropertyValue("1", "testUser3");
 		
 		// Odometer should now be at 2
 		property = propertiesDao.getCompleteProperty("1");
