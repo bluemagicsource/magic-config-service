@@ -123,7 +123,7 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	}
 
 	/**
-	 * Gets a property value based on property key
+	 * Get a property value based on property key
 	 * 
 	 * Automatically updated last accessed date and increments odometer
 	 * 
@@ -157,7 +157,7 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	}
 	
 	/**
-	 * Gets brief details about the property based on property key.
+	 * Get brief details about the property based on property key.
 	 * Can access property id, key, value
 	 * @return PropertyDto object or null if not found
 	 */
@@ -179,7 +179,7 @@ public class PropertiesDaoJdbcImpl extends JdbcDaoSupport implements PropertiesD
 	}
 
 	/**
-	 * Gets complete details about the property based on property key.
+	 * Get complete details about the property based on property key.
 	 * @return CompletePropertyDto object or null if not found
 	 */
 	@Override
