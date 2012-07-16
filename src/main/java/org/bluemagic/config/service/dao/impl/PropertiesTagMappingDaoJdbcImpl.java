@@ -6,7 +6,9 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class PropertiesTagMappingDaoJdbcImpl extends JdbcDaoSupport implements PropertiesTagMappingDao {
 
-	private static final String SELECT_PROPERTY_VALUE = "SELECT VALUE FROM PROPERTIES_TAG_MAPPING WHERE KEY=?";
+        private static final String MAP_TAG = "INSERT INTO PROPERTIES_TAG_MAPPING (KEY, VALUE) VALUES (?, ?)";
+
+    /*    	private static final String SELECT_PROPERTY_VALUE = "SELECT VALUE FROM PROPERTIES_TAG_MAPPING WHERE KEY=?";
 	
 	private static final String INSERT_TAG = "INSERT INTO PROPERTIES_TAG_MAPPING (KEY,VALUE) VALUES (?, ?)";
 	
@@ -16,7 +18,7 @@ public class PropertiesTagMappingDaoJdbcImpl extends JdbcDaoSupport implements P
 	
 	private static final String DELETE_TAG_BY_ID = "DELETE FROM PROPERTIES_TAG_MAPPING WHERE ID=?";
 	
-	@Override
+    	@Override
 	public boolean insertProperty(String propertyKey, String propertyValue) {
 	    
 	    int rowsUpdated = getJdbcTemplate().update(INSERT_PROPERTY_VALUE, propertyKey, propertyValue);
@@ -26,7 +28,6 @@ public class PropertiesTagMappingDaoJdbcImpl extends JdbcDaoSupport implements P
 		return false;
 	    }
 	}
-	
 	@Override
 	public boolean insertTag(String key, String value) {
 		
@@ -37,7 +38,23 @@ public class PropertiesTagMappingDaoJdbcImpl extends JdbcDaoSupport implements P
 		} else {
 			return false;
 		}
+	}*/	
+	@Override
+	public boolean mapToProperty(String key, String value) {
+		
+		int rowsUpdated = getJdbcTemplate().update(MAP_TAG, key, value);
+		
+		if (rowsUpdated == 1) {
+			return true;
+		} else {
+			return false;
+		}
 	}
+    /* @Override
+        public List<Long> getTagsByProperty(String propertyKey){
+            return null;
+        }
+    
 	@Override
 	public String getPropertyValue(String propertyKey){
 
@@ -76,6 +93,11 @@ public class PropertiesTagMappingDaoJdbcImpl extends JdbcDaoSupport implements P
 		} else {
 			return false;
 		}
-	}
+	}*/
 
 }
+
+
+/*
+get list of tags associated with a property
+ */
