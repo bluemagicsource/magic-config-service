@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @RequestMapping(value="/property")
 @Controller
@@ -35,9 +37,11 @@ public class PropertyController {
 		ResponseEntity<String> result = null;
 		
 		String property = getPropertyFromRequest(request);
+
+		URI propertyURI = generateUriFromProperty(property); // read takes a URI as a parameter
 		
 		// Retrieve the value for this Property.
-		String rval = propertyService.read(property);
+		String rval = propertyService.read(propertyURI);
 		
 		if (LOG.isInfoEnabled()) {
 			LOG.info("[GET] Resolved value: " + property + " ----> " + rval);
@@ -71,8 +75,10 @@ public class PropertyController {
 			// Parse the HttpServletRequest to get the property out.
 			String property = getPropertyFromRequest(request);
 			
+			URI propertyURI = generateUriFromProperty(property); // read takes an URI as a parameter
+			
 			// Try to create the property.
-			boolean rval = propertyService.create(property, value);
+			boolean rval = propertyService.create(propertyURI, value);
 			
 			if (rval) {
 				
@@ -148,6 +154,34 @@ public class PropertyController {
 		}
 		return property.toString();
 	}
+	
+        /**
+	 * Wrapper  method for the constructor URI(String str), creating a URI from a String. 
+	 * This function serves to catch the URISyntaxException error and handle it appropriately.
+	 * Catching the URISyntaxException is required to use URI constructors.
+	 * 
+	 * @param property
+	 *                 The property to convert to a URI.
+	 * @return
+	 *                 A URI that represents the property along with its
+	 *                 tags ordered and appended on.
+	 *                 Returns null if the conversion fails for any reason.
+	 **/
+
+        private URI generateUriFromProperty(String property) {
+	    try {
+		
+		URI uri = new URI(property);
+
+		return uri;
+
+	    }
+	    catch (URISyntaxException uriException) {
+		// Do Something.
+	    }
+
+	    return null; // error
+        }
 
 	/**
 	 * Retrieves the tag parameters from the Request object.

@@ -58,4 +58,14 @@ public class TagDaoJdbcImplTest {
 		Assert.assertNull(value);
 	}
 
+        @Test
+	public void testSelectTagsByKey() {
+	    // Implement
+	}
+
+        @Test
+	public void testSelectAllTags() {
+	    // Implement
+        }
+	
 }

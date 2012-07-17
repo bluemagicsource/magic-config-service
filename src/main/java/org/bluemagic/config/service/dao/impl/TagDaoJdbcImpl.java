@@ -8,6 +8,7 @@ import org.bluemagic.config.service.dao.TagDao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import java.util.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -17,9 +18,15 @@ public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 
 	private static final String SELECT_TAG_BY_ID = "SELECT VALUE FROM TAGS WHERE ID=?";
 
-	private static final String INSERT_TAG = "INSERT INTO TAGS (KEY,VALUE,TYPE) VALUES (?, ?, ?)";
+        private static final String INSERT_TAG = "INSERT INTO TAGS (KEY,VALUE,TYPE) VALUES (?, ?, ?)";
 
 	private static final String DELETE_TAG_BY_ID = "DELETE FROM TAGS WHERE ID=?";
+    
+        // SQL query for selectAllTags()
+        private static final String SELECT_TAGS = "SELECT ID, KEY, VALUE, TYPE FROM TAGS";
+
+        // SQL query for selectTagsByID()
+        private static final String SELECT_TAGS_BY_KEY = "SELECT ID, KEY, VALUE, TYPE FROM TAGS WHERE KEY=?";
 
 	/**
 	 * Get a specific tag id from the tag table by using the key value pair
@@ -32,6 +39,7 @@ public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 	 *            tag type can be (public, private, user defined value)
 	 * @return int tag id or -1 if tag does not exist
 	 */
+
 	@Override
 	public int getTagId(String key, String value, String type) {
 
@@ -113,4 +121,30 @@ public class TagDaoJdbcImpl extends JdbcDaoSupport implements TagDao {
 		return success;
 	}
 
+    // We will want a mechanism to select a list of all tags and all tags with a specified key.
+    // Anytime you return a tag you need the type, key, value and id in the object returned.
+
+    /**
+      Return a list of all Tags in the tags table.
+    **/
+
+    public List<String> selectAllTags() {
+	List<String> tagsList = 
+	    new ArrayList<String>( getJdbcTemplate().queryForList(SELECT_TAGS, String.class) );
+
+	return tagsList;
+    }
+
+    /**
+       Return a list of all Tags in the tags table with a specified key.    
+    **/
+    public List<String> selectTagsByKey(int tag_key){
+	List<String> tagsList = 
+	    new ArrayList<String>( getJdbcTemplate().queryForList(SELECT_TAGS_BY_KEY,  new Object[] { tag_key }, String.class) );
+
+	return tagsList;
+
+    }
+
+  
 }
