@@ -12,6 +12,7 @@ import org.bluemagic.config.api.tag.Tag;
 import org.bluemagic.config.service.ServiceTag;
 import org.bluemagic.config.service.dao.PropertiesDao;
 import org.bluemagic.config.service.dao.PropertiesTagDao;
+import org.bluemagic.config.service.dao.impl.PropertiesDaoJdbcImpl;
 import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
 import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
 import org.junit.Assert;
@@ -27,6 +28,45 @@ public class DatabaseRepositoryTest {
 		
 		repository = new DatabaseRepository();
 	}
+	
+	/*
+	@Test
+	public void testPutProperty() {
+		
+		String baseUrl = "http://www.bluemagicsource.org/";
+		repository.setBaseUrl(baseUrl);
+		repository.setPropertiesDao(new PropertiesDaoJdbcImpl());
+		//repository.setPropertiesTagDao(new StubPropertiesTagDao());
+		
+		URI key = null;
+		
+		try {
+			
+			key = new URI("abc/def?tags=123,456");
+		} catch (Throwable t) {
+			
+			throw new RuntimeException(t.getMessage(), t);
+		}
+		
+		String value = "testValue";
+		repository.put(key, value); // THROWING NULL POINTER EXCEPTION
+		PropertyDetails details = repository.getPropertyDetails(key);
+		
+		System.out.println(details);
+		System.out.println(details.getProperty());
+		System.out.println(details.getTagDetails());
+		
+		List<String> uris = new ArrayList<String>();
+		uris.add("http://www.bluemagicsource.org/tags/0");
+		uris.add("http://www.bluemagicsource.org/tags/2");
+		uris.add("http://www.bluemagicsource.org/tags/4");
+		
+		for (URI uri : details.getTagDetails()) {
+			
+			Assert.assertTrue(uris.contains(uri.toString()));
+		}
+	}
+	*/
 	
 	@Test
 	public void testGetPropertyDetails() {
