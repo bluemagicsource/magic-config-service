@@ -40,4 +40,17 @@ public class PropertyUtils {
 			throw new RuntimeException(t.getMessage(), t);
 		}
 	}
+	
+	/**
+	 * Return property without tags
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public static String propertyKeyWithoutTags(URI key) {
+		
+    	String propertyKey = key.getPath();
+    	
+    	return propertyKey;
+    }
 }

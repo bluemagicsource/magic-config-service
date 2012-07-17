@@ -9,8 +9,11 @@ import java.util.Map;
 import org.bluemagic.config.api.property.LocatedProperty;
 import org.bluemagic.config.api.service.CompletePropertyDetails;
 import org.bluemagic.config.api.service.PropertyDetails;
+import org.bluemagic.config.service.dao.HistoricalPropertiesDao;
 import org.bluemagic.config.service.dao.PropertiesDao;
 import org.bluemagic.config.service.dao.PropertiesTagDao;
+import org.bluemagic.config.service.dao.PropertiesTagMappingDao;
+import org.bluemagic.config.service.dao.TagDao;
 import org.bluemagic.config.service.dao.UserDao;
 import org.bluemagic.config.service.dao.impl.helper.CompletePropertyDto;
 import org.bluemagic.config.service.dao.impl.helper.PropertyDto;
@@ -19,13 +22,16 @@ import org.bluemagic.config.service.utils.TagUtils;
 
 /**
  * The database repository has been designed to interface with our 
- * data acccess layer (DAOs) to perform the various CRUD activities.
+ * data access layer (DAOs) to perform the various CRUD activities.
  **/
 public class DatabaseRepository implements DetailsRepository {
 
 	private PropertiesDao propertiesDao;
 	private PropertiesTagDao propertiesTagDao;
+	private PropertiesTagMappingDao propertiesTagMappingDao;
+	private HistoricalPropertiesDao historicalPropertiesDao;
 	private UserDao userDao;
+	private TagDao tagDao;
 	private String baseUrl;
 	
     /**
@@ -73,15 +79,37 @@ public class DatabaseRepository implements DetailsRepository {
 			removeUserFromTags(tags);
 		}
 		
+		// Insert/Update property in the properties table.
+		String propertyKey = PropertyUtils.propertyKeyWithoutTags(key);
+		// Attempt to get property based on key
+		PropertyDto propertyDto = propertiesDao.getProperty(propertyKey);
+		int propertyId;
+		if (propertyDto != null) {
+			// Property exist, update it
+			propertyId = propertyDto.getId();
+			propertiesDao.updatePropertyById(propertyId, propertyKey, (String) value, user);
+		}
+		else {
+			// Property does not exist, insert it
+			propertyId = propertiesDao.insertProperty(propertyKey, (String) value, user);
+		}
+		
 		// Go through and check if the tags exist yet.
 		// If the tags don't exist insert them into the tags table.
-		
-		
-		// Insert/Update property in the properties table.
-		
-		
-		// Add the appropriate keys to the PROPERTIES_TAGS_MAPPING
-		
+		for (String tagKey : tags.keySet()) {
+			// Assume all tags are public for now until way to determine tag type is developed
+			String tagType = "public";
+			
+			int tagId = tagDao.getTagId(tagKey, tags.get(tagKey), tagType);
+			if (tagId == -1) {
+				// Tag does not exist, insert it
+				tagId = tagDao.insertTag(tagKey, tags.get(tagKey), tagType);
+				
+				// Add property ID and tag ID to PROPERTIES_TAGS_MAPPING
+				propertiesTagMappingDao.insertPropertyToTagMapping(propertyId, tagId);
+			}
+			
+		}
 		
 		return null;
 	}
@@ -246,8 +274,25 @@ public class DatabaseRepository implements DetailsRepository {
      **/
 	@Override
 	public Object remove(URI key) {
-		// TODO Auto-generated method stub
-		return null;
+		Object valueRemoved = null;
+		
+		String propertyKey = PropertyUtils.propertyKeyWithoutTags(key);
+		PropertyDto propertyDto = propertiesDao.getProperty(propertyKey);
+		if (propertyDto != null) {
+			int propertyId = propertyDto.getId();
+	
+			// Property exists, insert into historical properties and then remove it
+			historicalPropertiesDao.insertHistoricalProperty(propertyKey);
+			// check to make sure historical property worked
+			
+			// Set return value to be removed, does not increase odometer
+			valueRemoved = propertyDto.getProperty().getValue();
+			
+			// Remove property from properties table
+			propertiesDao.deletePropertyById(propertyId);
+		}
+		
+		return valueRemoved;
 	}
 
     /**
@@ -263,7 +308,7 @@ public class DatabaseRepository implements DetailsRepository {
      **/
 	@Override
 	public int size() {
-        throw new UnsupportedOperationException("Database repository implementation does not support clear");
+        throw new UnsupportedOperationException("Database repository implementation does not support size");
     }
 
 	public UserDao getUserDao() {
