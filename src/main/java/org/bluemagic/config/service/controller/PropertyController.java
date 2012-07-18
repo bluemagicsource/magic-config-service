@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bluemagic.config.service.PropertyService;
+import org.bluemagic.config.api.service.PropertyService;
 import org.bluemagic.config.service.utils.ServletUtils;
 import org.bluemagic.config.service.utils.TagUtils;
 import org.springframework.beans.factory.annotation.Autowired;
