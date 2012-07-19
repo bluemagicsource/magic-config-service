@@ -206,7 +206,13 @@ public final class TagUtils {
 	public static String getPropertyWithoutTags(URI key, String baseUrl) {
 		
 		String keyAsString = key.toASCIIString();
-		String keyWithoutBaseUrl = keyAsString.replaceAll(baseUrl, "");
+		String keyWithoutBaseUrl;
+		if (baseUrl != null) {
+			keyWithoutBaseUrl = keyAsString.replaceAll(baseUrl, "");
+		}
+		else {
+			keyWithoutBaseUrl = keyAsString;
+		}
 		
 		String result = keyWithoutBaseUrl;
 		
