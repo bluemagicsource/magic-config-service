@@ -49,7 +49,7 @@ public class PropertyController {
 
 		if (rval != null) {
 			
-			result = new ResponseEntity<String>(HttpStatus.OK);
+			result = new ResponseEntity<String>(rval, HttpStatus.OK);
 		} else {
 			
 			result = new ResponseEntity<String>(HttpStatus.NOT_FOUND);
