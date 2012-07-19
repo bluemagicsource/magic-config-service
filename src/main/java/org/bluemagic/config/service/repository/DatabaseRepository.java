@@ -348,4 +348,30 @@ public class DatabaseRepository implements DetailsRepository {
 	public void setPropertiesTagDao(PropertiesTagDao propertiesTagDao) {
 		this.propertiesTagDao = propertiesTagDao;
 	}
+	
+	public PropertiesTagMappingDao getPropertiesTagMappingDao() {
+		return propertiesTagMappingDao;
+	}
+
+	public void setPropertiesTagMappingDao(
+			PropertiesTagMappingDao propertiesTagMappingDao) {
+		this.propertiesTagMappingDao = propertiesTagMappingDao;
+	}
+
+	public HistoricalPropertiesDao getHistoricalPropertiesDao() {
+		return historicalPropertiesDao;
+	}
+
+	public void setHistoricalPropertiesDao(
+			HistoricalPropertiesDao historicalPropertiesDao) {
+		this.historicalPropertiesDao = historicalPropertiesDao;
+	}
+
+	public TagDao getTagDao() {
+		return tagDao;
+	}
+
+	public void setTagDao(TagDao tagDao) {
+		this.tagDao = tagDao;
+	}
 }

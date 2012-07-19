@@ -1,13 +1,14 @@
 package org.bluemagic.config.service;
 import java.net.URI;
 
+import org.bluemagic.config.api.service.PropertyService;
 import org.bluemagic.config.service.repository.DatabaseRepository;
 
 /**
  * The service is the interface that all implementations can use including
  * but not limited to the restful service, command line client, thick client....
  **/
-public class PropertyServiceImpl {
+public class PropertyServiceImpl implements PropertyService {
 
     private DatabaseRepository databaseRepo;    
 
@@ -70,4 +71,12 @@ public class PropertyServiceImpl {
 	    return false;
 	}
     }
+
+	public DatabaseRepository getDatabaseRepo() {
+		return databaseRepo;
+	}
+
+	public void setDatabaseRepo(DatabaseRepository databaseRepo) {
+		this.databaseRepo = databaseRepo;
+	}
 }
