@@ -22,13 +22,41 @@
         <property name="username" value="sa" />
         <property name="password" value="" />
     </bean>
+    
+    <bean id="databaseRepo" class="org.bluemagic.config.service.repository.DatabaseRepository">
+        <property name="propertiesDao">
+        	<bean class="org.bluemagic.config.service.dao.impl.PropertiesDaoJdbcImpl">
+		        <property name="dataSource" ref="dataSourceH2" />
+		    </bean>	
+        </property>
+        <property name="propertiesTagMappingDao">
+        	<bean class="org.bluemagic.config.service.dao.impl.PropertiesTagMappingDaoJdbcImpl">
+		        <property name="dataSource" ref="dataSourceH2" />
+		    </bean>	
+        </property>
+        <property name="historicalPropertiesDao">
+        	<bean class="org.bluemagic.config.service.dao.impl.HistoricalPropertiesDaoJdbcImpl">
+		        <property name="dataSource" ref="dataSourceH2" />
+		    </bean>	
+        </property>
+        <property name="userDao">
+        	<bean class="org.bluemagic.config.service.dao.impl.UserDaoJdbcImpl">
+		        <property name="dataSource" ref="dataSourceH2" />
+		    </bean>	
+        </property>
+        <property name="tagDao">
+        	<bean class="org.bluemagic.config.service.dao.impl.TagDaoJdbcImpl">
+		        <property name="dataSource" ref="dataSourceH2" />
+		    </bean>	
+        </property>
+    </bean>
 
     <!-- This bean is optional and when it is configured the developers can
          access the database and should run the h2-setup.sql script to initialize
          the database through the browser console http://localhost:8082/ 
          Note you need to copy the h2-*.jar files into the tomcat lib folder -->    
-    <bean id="h2-WebServer" class="org.h2.tools.Server" factory-method="createWebServer" init-method="start">
+    <!--<bean id="h2-WebServer" class="org.h2.tools.Server" factory-method="createWebServer" init-method="start">
         <constructor-arg value="-web,-webAllowOthers,-webPort,8082" />
-    </bean>
+    </bean> -->
 
 </beans>

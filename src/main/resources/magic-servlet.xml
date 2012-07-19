@@ -16,6 +16,8 @@
 	<context:component-scan base-package="org.bluemagic.config.service.controller" />
 
 	<mvc:annotation-driven />
+	
+	<import resource="classpath:magic-h2-database.xml"></import>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
@@ -24,4 +26,9 @@
             </list>
         </property>
     </bean>
+    
+    <bean class="org.bluemagic.config.service.PropertyServiceImpl">
+        <property name="databaseRepo" ref="databaseRepo"  ></property>
+    </bean>
+    
 </beans>
