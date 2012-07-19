@@ -37,8 +37,11 @@ public class PropertyServiceImpl implements PropertyService {
     public String read(URI uri) {
 
 	Object value = databaseRepo.get(uri);
-
-	return value.toString();
+	
+		if (value != null)
+			return value.toString();
+		else
+			return null;
     }
 
     /**

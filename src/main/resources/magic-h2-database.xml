@@ -49,6 +49,7 @@
 		        <property name="dataSource" ref="dataSourceH2" />
 		    </bean>	
         </property>
+        <property name="baseUrl" value="http://localhost:8080/magic/property/" />
     </bean>
 
     <!-- This bean is optional and when it is configured the developers can
