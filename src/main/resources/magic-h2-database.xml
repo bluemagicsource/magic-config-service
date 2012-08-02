@@ -14,6 +14,38 @@
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
 
+    <!--
+
+      H2 BlueMagic server setup instructions
+
+      1. Ensure that you the latest code (api must be built before the server)
+      2. Install an application server setup. We recommend Apache Tomcat 
+      3. Setup the H2 database (we recommend grabbing the H2 jar file from 
+         your local Maven repository using a command such as: 
+           find ~/.m2/repository/ -name h2*.jar)
+         
+         Then run H2 using a command such as:
+           java -jar ~/.m2/repository/com/h2database/h2/1.3.166/h2-1.3.166.jar
+
+         A new browser should open with the H2 database window (ensure you have
+         the correct location where you want to setup the databse in he url below).
+
+         Finally run the database setup script (h2-test-setup.sql) and then the 
+         database population script (h2-test-data.sql) with test data or insert your own data.
+
+      4. Ensure that the H2*.jar files are in the application server's lib folder
+
+      5. Start your application server and deploy the 'magic.war' 
+         [Caution: ensure that the H2 server is not running from step 4 and with Tomcat
+          becareful when shutting Tomcat down sometimes it does not stop and you will
+          need to kill]
+
+      6. Now test to see if the test server setup is working by entering the url
+         into your browser:  http://localhost:8080/magic/property/abc
+      -->
+
+
+
     <!-- This bean references database that is setup in the user's home directory
          data folder (~/data) whom the server is running as, unless that is changed below -->
 	<bean id="dataSourceH2" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -52,12 +84,16 @@
         <property name="baseUrl" value="http://localhost:8080/magic/property/" />
     </bean>
 
-    <!-- This bean is optional and when it is configured the developers can
+    <!-- This bean is required and when it is configured the developers can
          access the database and should run the h2-setup.sql script to initialize
          the database through the browser console http://localhost:8082/ 
-         Note you need to copy the h2-*.jar files into the tomcat lib folder -->    
-    <!--<bean id="h2-WebServer" class="org.h2.tools.Server" factory-method="createWebServer" init-method="start">
+         Note you need to copy the h2-*.jar files into the tomcat lib folder. 
+           
+         If you choose not to use this bean then you will need to have H2 running
+         somewhere (jar -...).
+      -->    
+    <bean id="h2-WebServer" class="org.h2.tools.Server" factory-method="createWebServer" init-method="start">
         <constructor-arg value="-web,-webAllowOthers,-webPort,8082" />
-    </bean> -->
+    </bean>
 
 </beans>
