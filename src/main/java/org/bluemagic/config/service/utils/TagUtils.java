@@ -27,8 +27,11 @@ public final class TagUtils {
                 String tagsString = part.substring(index + 1);                
                 String reorderedSingleTags = reorderSingleTags(tagsString);
 
-                tagsToSort.add(reorderedSingleTags);
+		// "tags=" readded after parsing it out
+                tagsToSort.add("tags=" + reorderedSingleTags);
                 // Not a single tag, so add it to the tags to sort.
+
+		
             } else {
                 tagsToSort.add(part);
             }

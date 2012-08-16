@@ -200,6 +200,7 @@ public class PropertyController {
 		if (unorderedTags != null) {
 			orderedTags = TagUtils.reorder(unorderedTags);
 		}
+
 		return orderedTags;
 	}
 
