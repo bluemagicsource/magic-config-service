@@ -50,7 +50,7 @@
          data folder (~/data) whom the server is running as, unless that is changed below -->
 	<bean id="dataSourceH2" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver" />
-        <property name="url" value="jdbc:h2:/tmp/bluemagic/data" />
+        <property name="url" value="jdbc:h2:/opt/bluemagic/database/h2" />
         <property name="username" value="sa" />
         <property name="password" value="" />
     </bean>
