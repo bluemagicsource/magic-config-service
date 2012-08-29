@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletConfig;
+import org.springframework.web.context.ServletConfigAware;
 
 import org.bluemagic.config.api.property.LocatedProperty;
 import org.bluemagic.config.api.service.CompletePropertyDetails;
@@ -24,7 +27,7 @@ import org.bluemagic.config.service.utils.TagUtils;
  * The database repository has been designed to interface with our 
  * data access layer (DAOs) to perform the various CRUD activities.
  **/
-public class DatabaseRepository implements DetailsRepository {
+public class DatabaseRepository implements DetailsRepository, ServletConfigAware {
 
 	private PropertiesDao propertiesDao;
 	private PropertiesTagDao propertiesTagDao;
@@ -33,6 +36,25 @@ public class DatabaseRepository implements DetailsRepository {
 	private UserDao userDao;
 	private TagDao tagDao;
 	private String baseUrl;
+
+
+    /**
+     * Called automatically by Spring.
+     *
+     * This function sets the baseUrl used by Spring.
+     **/
+
+    @Override
+    public void setServletConfig(ServletConfig servletConfig) {
+	
+	ServletContext context = servletConfig.getServletContext();
+
+	String contextPath = context.getContextPath();
+
+	// System.out.println("contextPath = " + contextPath);
+
+	this.setBaseUrl(contextPath);
+    }
 	
     /**
      * Not 100% sure what the purpose of this method is so please add documentation
