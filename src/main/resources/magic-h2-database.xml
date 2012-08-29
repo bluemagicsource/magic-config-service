@@ -55,6 +55,12 @@
         <property name="password" value="" />
     </bean>
     
+    <!--  This initializes the H2 database and inserts sample data -->
+    <jdbc:initialize-database data-source="dataSourceH2" ignore-failures="ALL">
+	  <jdbc:script location="classpath:h2-setup.sql"/>
+	  <jdbc:script location="classpath:h2-test-data.sql"/>
+	</jdbc:initialize-database>
+    
     <bean id="databaseRepo" class="org.bluemagic.config.service.repository.DatabaseRepository">
         <property name="propertiesDao">
         	<bean class="org.bluemagic.config.service.dao.impl.PropertiesDaoJdbcImpl">
@@ -92,7 +98,7 @@
          If you choose not to use this bean then you will need to have H2 running
          somewhere (jar -...).
       -->    
-    <bean id="h2-WebServer" class="org.h2.tools.Server" factory-method="createWebServer" init-method="start">
+    <bean id="h2-WebServer" class="org.h2.tools.Server" factory-method="createWebServer" init-method="start" destroy-method="stop">
         <constructor-arg value="-web,-webAllowOthers,-webPort,8082" />
     </bean>
 
