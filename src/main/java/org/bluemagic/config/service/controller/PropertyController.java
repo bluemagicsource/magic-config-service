@@ -1,5 +1,9 @@
 package org.bluemagic.config.service.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -15,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @RequestMapping(value="/property")
 @Controller
@@ -63,17 +65,18 @@ public class PropertyController {
 	 * itself is the property, and the value should be in the header.
 	 */
 	@RequestMapping(value="/**", method=RequestMethod.POST)
-	public @ResponseBody ResponseEntity<String> createProperty(HttpServletRequest request) {
+	public @ResponseBody ResponseEntity<String> createProperty(HttpServletRequest request, @RequestBody String value) {
 		
 		// This will be the response sent back to the agent.
 		ResponseEntity<String> result = null;
 		
-		String value = request.getParameter("propertyValue");
 		
 		if (value != null) {
 			
 			// Parse the HttpServletRequest to get the property out.
 			String property = getPropertyFromRequest(request);
+			
+			System.out.println("Property: " + property + ", Value: " + value);
 			
 			URI propertyURI = generateUriFromProperty(property); // read takes an URI as a parameter
 			
