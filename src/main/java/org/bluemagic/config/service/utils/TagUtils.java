@@ -1,6 +1,8 @@
 package org.bluemagic.config.service.utils;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,31 +58,51 @@ public final class TagUtils {
     	
     	Map<String, String> results = new HashMap<String, String>();
     	
-    	// GET ALL THE TAGS
-    	String query = key.getQuery();
+    	System.out.println("URI: " + key.toASCIIString());
     	
-    	if (query != null) {
+    	// GET ALL THE TAGS
+    	String fullProperty = key.toASCIIString();
+    	int queryIndex = fullProperty.indexOf("?");
+    	
+    	if (queryIndex > -1) {
     		
-    		// SPLIT INTO KEY=VALUE PAIRS
-    		String[] properties = query.split("&");
-    		
-    		for (String property : properties) {
+    		try {
     			
-    			String[] keyValue = property.split("=");
+    			String query = URLDecoder.decode(fullProperty.substring(queryIndex + 1), "UTF-8");
     			
-    			// RE-ORDER SINGLE TAGS
-    			if (keyValue[0].equals("tags")) {
+    			System.out.println("Query: " + query);
+    			
+    			if (query != null) {
     				
-    				String reorderedTags = reorderSingleTags(keyValue[1]);
+    				// SPLIT INTO KEY=VALUE PAIRS
+    				String[] properties = query.split("&");
     				
-    				results.put(keyValue[0], reorderedTags);
-    			} else {
-    				
-    				// ADD PROPERTY TO RESULTS MAPPING
-    				results.put(keyValue[0], keyValue[1]);
-    			}    		
+    				for (String property : properties) {
+    					
+    					System.out.println("Tag: " + property);
+    					
+    					String[] keyValue = property.split("=");
+    					
+    					// RE-ORDER SINGLE TAGS
+    					if (keyValue[0].equals("tags")) {
+    						
+    						String reorderedTags = reorderSingleTags(keyValue[1]);
+    						
+    						results.put(keyValue[0], reorderedTags);
+    					} else {
+    						
+    						// ADD PROPERTY TO RESULTS MAPPING
+    						results.put(keyValue[0], keyValue[1]);
+    					}    		
+    				}
+    			}
+    			
+    		} catch (IOException ioe) {
+    			throw new RuntimeException();
     		}
     	}
+    	
+    	System.out.println(results);
     	
     	return results;
     }
