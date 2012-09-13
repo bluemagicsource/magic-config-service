@@ -1,8 +1,11 @@
 package org.bluemagic.config.service.controller;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Enumeration;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -144,18 +147,34 @@ public class PropertyController {
 		// Get the base property from the URI.
 		String baseProperty = ServletUtils.getProperty(request, "/property/");
 		
+		System.out.println("BaseProperty: " + baseProperty);
+		
 		// Get the tags if there are any.
 		String orderedTags = getTagParameters(request);
+		
+		System.out.println("OrderedTags: " + orderedTags);
 		
 		// Start building the full Property URI by adding on the tags.
 		StringBuilder property = new StringBuilder(baseProperty);
 		
 		// Append the tags if there are any.
 		if (orderedTags != null) {
+			
+			try {
+				orderedTags = URLEncoder.encode(orderedTags, "UTF-8");
+			} catch (IOException ioe) {
+				throw new RuntimeException(ioe.getMessage(), ioe);
+			}
+			
 			property.append("?");
 			property.append(orderedTags);
 		}
-		return property.toString();
+		
+		String rval = property.toString();
+		
+		System.out.println("Final Property: " + rval);
+		
+		return rval;
 	}
 	
         /**
@@ -198,9 +217,16 @@ public class PropertyController {
 		// Get the tags from the query parameter.
 		String unorderedTags = request.getQueryString();
 		
+		System.out.println("UnorderedTags: " + unorderedTags);
+		
 		String orderedTags = null;
 		// Order the tags if there are any.
 		if (unorderedTags != null) {
+			try {
+				unorderedTags = URLDecoder.decode(unorderedTags, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException();
+			}
 			orderedTags = TagUtils.reorder(unorderedTags);
 		}
 

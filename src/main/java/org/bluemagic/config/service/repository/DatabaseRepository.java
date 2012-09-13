@@ -1,6 +1,7 @@
 package org.bluemagic.config.service.repository;
 
 import java.net.URI;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -79,17 +80,25 @@ public class DatabaseRepository implements DetailsRepository, ServletConfigAware
      **/
 	@Override
 	public Object put(URI key, Object value) {
-
+		
+		System.out.println("Key: " + key.toASCIIString());
+		
 		// Parse out all the tags...
 		Map<String, String> tags = TagUtils.parseTags(key);
 		
+		System.out.println("Tags: " + tags);
+		
 		String user = getUser(tags);
 
+		System.out.println("User: " + user);
+		
 		if (user != null) {
 			
 			// Check to see if the user exists.  If they don't, then add them to the
 			// user's table.
 			int userId = userDao.getUserId(user);
+			
+			System.out.println("UserId: " + userId);
 			
 			// If the user doesn't exist yet, insert them into the user's table
 			if (userId == -1) {
@@ -99,12 +108,25 @@ public class DatabaseRepository implements DetailsRepository, ServletConfigAware
 			
 			// Remove user from tags...
 			removeUserFromTags(tags);
+			
+			System.out.println("Removed user...remaining tags: " + tags);
+		}
+		
+		// decode the URI
+		try {
+			String fullProperty = key.toASCIIString();
+			key = new URI(URLDecoder.decode(fullProperty, "UTF-8"));
+		} catch (Throwable t) {
+			throw new RuntimeException(t.getMessage(), t);
 		}
 		
 		// Insert/Update property in the properties table.
 		String propertyKey = PropertyUtils.propertyKeyWithoutTags(key);
 		// Attempt to get property based on key
 		PropertyDto propertyDto = propertiesDao.getProperty(propertyKey);
+		
+		System.out.println("PropertyDto: " + propertyDto);
+		
 		int propertyId;
 		if (propertyDto != null) {
 			// Property exist, update it
