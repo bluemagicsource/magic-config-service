@@ -57,7 +57,7 @@
     </bean>
     
     <!--  This initializes the H2 database and inserts sample data -->
-    <jdbc:initialize-database data-source="dataSourceH2" ignore-failures="ALL">
+    <jdbc:initialize-database data-source="dataSourceH2">
 	  <jdbc:script location="classpath:h2-setup.sql"/>
 	  <jdbc:script location="classpath:h2-test-data.sql"/>
 	</jdbc:initialize-database>
