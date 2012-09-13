@@ -2,6 +2,9 @@ package org.bluemagic.config.service;
 
 import org.bluemagic.config.api.tag.TripleTag;
 
+/**
+ * Used by the UI to display additional information.
+ */
 public class ServiceTag extends TripleTag {
 
 	private static String serviceNamespace = "service";
